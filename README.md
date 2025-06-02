@@ -43,6 +43,22 @@ Each recipe contains:
 - Step-by-step instructions
 - Optional notes or metadata
 
+## 🔐 Roadmap (Planned)
+
+- [ ] User-created recipes and editing
+- [ ] Recipe backup/export
+- [ ] Secure cloud sync (optional)
+- [ ] File-based recipe import (custom `.brewrec` format)
+- [ ] Multilingual support
+- [ ] Apple Shortcut and widget integration
+
+---
+
+## 🧠 Idea Behind Brewpad
+
+The idea behind Brewpad is intentional simplicity. It doesn’t try to be a social platform, a blog, or a generic cooking app — it’s made for people who treat the ritual of brewing as something personal and peaceful. Whether you craft the perfect matcha latte or enjoy testing different cold brew ratios, Brewpad gives you a calm, organized place to store and rediscover your favorite drinks.
+
+> *"Good brewing is half ritual, half recipe."* – Brewpad Philosophy
 ### ❤️ Favorites
 Mark your favorite recipes for easy access anytime.
 
