@@ -1,0 +1,21 @@
+{
+    "id": "2c5b9b3f-4e6d-5f7a-8a9c-1d2e3f4a5678",
+    "name": "Earl Grey Tea",
+    "category": "Tea",
+    "isFeatured": true,
+    "description": "A classic black tea flavored with oil of bergamot, offering a distinctive citrus aroma and taste. Perfect for morning or afternoon tea time.",
+    "ingredients": [
+        "1 Earl Grey tea bag or 2g loose leaf tea",
+        "240ml hot water (93°C)",
+        "Milk or lemon (optional)",
+        "Sugar or honey (optional)"
+    ],
+    "preparations": [
+        "Bring water to 93°C (just below boiling)",
+        "Place tea bag or leaves in a cup",
+        "Pour hot water over tea",
+        "Steep for 3-5 minutes",
+        "Remove tea bag or strain leaves",
+        "Add milk, lemon, or sweetener if desired"
+    ]
+} 

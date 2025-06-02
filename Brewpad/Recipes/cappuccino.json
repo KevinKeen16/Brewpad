@@ -1,0 +1,19 @@
+{
+    "id": "1b4f8a2e-3d5c-4e6f-9a7b-8c2d1e0f3456",
+    "name": "Cappuccino",
+    "category": "Coffee",
+    "isFeatured": false,
+    "description": "A classic espresso-based drink with steamed milk and a light layer of foam. Perfect for morning or afternoon, this drink balances the intensity of coffee with the smoothness of milk.",
+    "ingredients": [
+        "22.5g ground coffee",
+        "120ml steamed milk",
+        "1cm milk foam",
+        "Pinch of cocoa powder (optional)"
+    ],
+    "preparations": [
+        "Pull a double shot of espresso (45g) into a warmed cup",
+        "Steam milk until it reaches 65-68°C, creating a light, silky foam",
+        "Pour the steamed milk over the espresso, holding back the foam",
+        "Top with a small amount of foam and dust with cocoa if desired"
+    ]
+} 

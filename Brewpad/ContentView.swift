@@ -1,0 +1,69 @@
+//
+//  ContentView.swift
+//  Brewpad
+//
+//  Created by Kevin Keen on 12/28/24.
+//
+
+import SwiftUI
+
+struct ContentView: View {
+    @EnvironmentObject private var settingsManager: SettingsManager
+    @EnvironmentObject private var recipeStore: RecipeStore
+    @EnvironmentObject private var appState: AppState
+    @State private var selectedTab = 0
+    
+    var body: some View {
+        Group {
+            if !settingsManager.hasCompletedOnboarding {
+                OnboardingView()
+            } else if appState.shouldReinitialize {
+                SplashScreen(action: appState.lastAction)
+            } else if recipeStore.isInitialized {
+                TabView(selection: $selectedTab) {
+                    NavigationView {
+                        RecipesView()
+                    }
+                    .tabItem {
+                        Label("Recipes", systemImage: "book.fill")
+                    }
+                    .tag(0)
+                    
+                    RecipeManagerView()
+                        .tabItem {
+                            Label("Manage", systemImage: "square.and.pencil")
+                        }
+                        .tag(1)
+                    
+                    InfoView()
+                        .tabItem {
+                            Label("Info", systemImage: "info.circle.fill")
+                        }
+                        .tag(2)
+                    
+                    NavigationView {
+                        SettingsView()
+                            .navigationTitle("Settings")
+                    }
+                    .tabItem {
+                        Label("Settings", systemImage: "gear")
+                    }
+                    .tag(3)
+                }
+                .sheet(isPresented: $appState.shouldShowImport) {
+                    if let recipe = appState.importedRecipe {
+                        RecipeEditorView(recipe: recipe, isImporting: true)
+                    }
+                }
+            } else {
+                SplashScreen()
+            }
+        }
+        .animation(.easeInOut(duration: 0.3), value: recipeStore.isInitialized)
+        .animation(.easeInOut(duration: 0.3), value: settingsManager.hasCompletedOnboarding)
+    }
+}
+
+#Preview {
+    ContentView()
+}
