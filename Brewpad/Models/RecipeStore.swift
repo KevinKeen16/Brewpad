@@ -7,6 +7,7 @@ class RecipeStore: ObservableObject {
     @Published private(set) var isInitialized = false
     @Published var showServerError = false
     @Published var serverResponse: String?
+    @Published var serverFetchedRecipes: [String] = []
     private let recipesDirectoryName = "Recipes"
     private let serverBaseURL = "https://bprs.mirreravencd.com/recipes/"
     private var hasLoadedRecipes = false
@@ -67,6 +68,10 @@ class RecipeStore: ObservableObject {
             }
 
             let fileNames = self.extractJSONFileNames(from: content)
+
+            DispatchQueue.main.async {
+                self.serverFetchedRecipes = fileNames
+            }
 
             let dispatchGroup = DispatchGroup()
 
