@@ -258,7 +258,8 @@ class RecipeStore: ObservableObject {
                let data = try? Data(contentsOf: url),
                var recipe = try? JSONDecoder().decode(Recipe.self, from: data) {
                 // Force built-in status and Brewpad creator while
-                // preserving id and featured state from the bundled file
+                // stripping the featured state. Only server-downloaded
+                // recipes may retain the featured flag.
                 recipe = Recipe(
                     id: recipe.id,
                     name: recipe.name,
@@ -268,7 +269,7 @@ class RecipeStore: ObservableObject {
                     preparations: recipe.preparations,
                     isBuiltIn: true,
                     creator: "Brewpad",  // Set Brewpad as creator for system recipes
-                    isFeatured: recipe.isFeatured
+                    isFeatured: false
                 )
                 recipes.append(recipe)
             }
@@ -304,7 +305,24 @@ class RecipeStore: ObservableObject {
     
     private func loadRecipe(from url: URL) throws -> Recipe {
         let data = try Data(contentsOf: url)
-        let recipe = try JSONDecoder().decode(Recipe.self, from: data)
+        var recipe = try JSONDecoder().decode(Recipe.self, from: data)
+
+        // Only allow the featured flag for recipes downloaded from the server
+        // which are stored with the `.brewpadrecipe` extension.
+        if url.pathExtension.lowercased() != "brewpadrecipe" {
+            recipe = Recipe(
+                id: recipe.id,
+                name: recipe.name,
+                category: recipe.category,
+                description: recipe.description,
+                ingredients: recipe.ingredients,
+                preparations: recipe.preparations,
+                isBuiltIn: recipe.isBuiltIn,
+                creator: recipe.creator,
+                isFeatured: false
+            )
+        }
+
         print("Successfully loaded recipe: \(recipe.name)")
         return recipe
     }

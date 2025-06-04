@@ -17,6 +17,6 @@ struct RecipeStoreBundledRecipesTests {
         #expect(earlGrey?.creator == "Brewpad")
         #expect(earlGrey?.isBuiltIn == true)
         #expect(earlGrey?.id.uuidString == "2c5b9b3f-4e6d-5f7a-8a9c-1d2e3f4a5678")
-        #expect(earlGrey?.isFeatured == true)
+        #expect(earlGrey?.isFeatured == false)
     }
 }
