@@ -106,6 +106,7 @@ struct RecipeCard: View {
                 }
             }
         }
+        .zIndex(isExpanded ? 1 : 0)
         .sheet(isPresented: $showingNoteSheet) {
             AddNoteView(recipe: recipe)
         }
