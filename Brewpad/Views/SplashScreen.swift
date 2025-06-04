@@ -26,8 +26,9 @@ struct SplashScreen: View {
         
         // Check for actual holiday
         let today = Calendar.current.dateComponents([.month, .day], from: Date())
-        let month = today.month!
-        let day = today.day!
+        guard let month = today.month, let day = today.day else {
+            return HolidayTheme.getColor(for: nil)
+        }
         
         let holiday: SettingsManager.Holiday? = {
             switch (month, day) {

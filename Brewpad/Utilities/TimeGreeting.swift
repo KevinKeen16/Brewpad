@@ -91,8 +91,9 @@ struct TimeGreeting {
     // Move the original seasonal check logic to a separate function
     private static func checkActualSeasonalQuip(name: String) -> String? {
         let today = Calendar.current.dateComponents([.month, .day], from: Date())
-        let month = today.month!
-        let day = today.day!
+        guard let month = today.month, let day = today.day else {
+            return nil
+        }
         
         let seasonalQuips: [String]? = {
             guard let seasonal = quips?.seasonal else { return nil }
