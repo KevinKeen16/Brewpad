@@ -167,9 +167,8 @@ class RecipeStore: ObservableObject {
             print("📥 Downloaded data for \(fileName)")
 
             var recipeData = data
-            if var recipe = try? JSONDecoder().decode(Recipe.self, from: data),
-               recipe.creator == "Unknown" {
-                // Default creator when missing
+            if var recipe = try? JSONDecoder().decode(Recipe.self, from: data) {
+                // Overwrite creator for server-imported recipes
                 recipe = Recipe(
                     id: recipe.id,
                     name: recipe.name,
