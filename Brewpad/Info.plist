@@ -133,5 +133,18 @@
     </dict>
     <key>QLPreviewProvider</key>
     <string>$(PRODUCT_MODULE_NAME).RecipePreviewProvider</string>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>bprs.mirreravencd.com</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
+            </dict>
+        </dict>
+    </dict>
 </dict>
 </plist>
