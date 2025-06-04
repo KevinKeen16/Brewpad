@@ -111,6 +111,11 @@ class RecipeStore: ObservableObject {
         }
         return recipes.filter { $0.category.rawValue == category }
     }
+
+    /// Returns all recipes marked as featured.
+    func getFeaturedRecipes() -> [Recipe] {
+        recipes.filter { $0.isFeatured }
+    }
     
     private func generateFilename(for recipe: Recipe) -> String {
         let uuidSuffix = recipe.id.uuidString.suffix(8)
