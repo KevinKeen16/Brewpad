@@ -34,11 +34,15 @@ class SettingsManager: ObservableObject {
         }
     }
     
-    @Published var isOver18: Bool {
+    // Birthdate is used for age verification
+    @Published var birthdate: Date? {
         didSet {
-            UserDefaults.standard.set(isOver18, forKey: "isOver18")
+            UserDefaults.standard.set(birthdate, forKey: "birthdate")
+            isOver18 = calculateIsOver18(from: birthdate)
         }
     }
+
+    @Published private(set) var isOver18: Bool = false
     
     enum Holiday: String, CaseIterable {
         case none = "None"
@@ -82,7 +86,15 @@ class SettingsManager: ObservableObject {
         self.username = UserDefaults.standard.string(forKey: "username")
         self.hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
         self.isDebugModeEnabled = UserDefaults.standard.bool(forKey: "isDebugModeEnabled")
-        self.isOver18 = UserDefaults.standard.bool(forKey: "isOver18")
+
+        if let savedDate = UserDefaults.standard.object(forKey: "birthdate") as? Date {
+            self.birthdate = savedDate
+            self.isOver18 = calculateIsOver18(from: savedDate)
+        } else {
+            self.birthdate = nil
+            // Support older versions that stored the boolean directly
+            self.isOver18 = UserDefaults.standard.bool(forKey: "isOver18")
+        }
         
         if let holidayString = UserDefaults.standard.string(forKey: "debugHoliday"),
            let savedHoliday = Holiday(rawValue: holidayString) {
@@ -91,4 +103,12 @@ class SettingsManager: ObservableObject {
             self.debugHoliday = .none
         }
     }
-} 
+
+    private func calculateIsOver18(from date: Date?) -> Bool {
+        guard let date else { return false }
+        if let years = Calendar.current.dateComponents([.year], from: date, to: Date()).year {
+            return years >= 18
+        }
+        return false
+    }
+}

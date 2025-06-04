@@ -88,20 +88,23 @@ struct SettingsView: View {
                     
                     Divider()
                     
-                    // Age Verification
+                    // Birth Date
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Age Verification")
+                        Text("Birthday")
                             .font(.headline)
-                        
-                        Toggle(isOn: $settingsManager.isOver18) {
-                            HStack {
-                                Image(systemName: "person.crop.circle.badge.checkmark")
-                                    .foregroundColor(.blue)
-                                Text("I am 18 or older")
-                            }
-                        }
-                        .toggleStyle(SwitchToggleStyle(tint: .blue))
-                        
+
+                        DatePicker(
+                            "Select your birth date",
+                            selection: Binding<Date>(
+                                get: {
+                                    settingsManager.birthdate ?? Calendar.current.date(byAdding: .year, value: -18, to: Date())!
+                                },
+                                set: { settingsManager.birthdate = $0 }
+                            ),
+                            displayedComponents: .date
+                        )
+                        .datePickerStyle(.compact)
+
                         Text("Required for accessing alcoholic beverage recipes")
                             .font(.caption)
                             .foregroundColor(.gray)
@@ -253,7 +256,7 @@ struct SettingsView: View {
                                         // Reset all onboarding-related settings
                                         settingsManager.hasCompletedOnboarding = false
                                         settingsManager.username = nil
-                                        settingsManager.isOver18 = false
+                                        settingsManager.birthdate = nil
                                         settingsManager.isReplayingTutorial = false // Ensure full onboarding
                                     }
                                 }) {
@@ -381,7 +384,7 @@ struct SettingsView: View {
                     // Reset all onboarding-related settings
                     settingsManager.hasCompletedOnboarding = false
                     settingsManager.username = nil
-                    settingsManager.isOver18 = false
+                    settingsManager.birthdate = nil
                     settingsManager.isReplayingTutorial = false // Ensure full onboarding
                 }
             }
