@@ -74,7 +74,8 @@ struct SplashScreen: View {
                             currentQuip = TimeGreeting.getQuip(username: settingsManager.username, settingsManager: settingsManager)
                         }
                         if isBirthday {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            // Reveal confetti as the quip appears.
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 showConfetti = true
                             }
                         }
