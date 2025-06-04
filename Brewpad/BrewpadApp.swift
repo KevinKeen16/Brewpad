@@ -11,6 +11,7 @@ import SwiftUI
 struct BrewpadApp: App {
     @StateObject private var settingsManager = SettingsManager()
     @StateObject private var notesManager = NotesManager()
+    @StateObject private var favoritesManager = FavoritesManager()
     @StateObject private var recipeStore = RecipeStore()
     @StateObject private var appState = AppState()
     
@@ -19,6 +20,7 @@ struct BrewpadApp: App {
             ContentView()
                 .environmentObject(settingsManager)
                 .environmentObject(notesManager)
+                .environmentObject(favoritesManager)
                 .environmentObject(recipeStore)
                 .environmentObject(appState)
                 .preferredColorScheme(settingsManager.theme.colorScheme)

@@ -4,6 +4,7 @@ struct RecipesView: View {
     @EnvironmentObject private var settingsManager: SettingsManager
     @EnvironmentObject private var appState: AppState
     @StateObject private var recipeStore = RecipeStore()
+    @EnvironmentObject private var favoritesManager: FavoritesManager
     @State private var selectedCategory = 0
     @State private var expandedRecipe: UUID?
     @State private var slideDirection: SlideDirection = .none
@@ -11,6 +12,7 @@ struct RecipesView: View {
     @State private var showAgeRestrictionAlert = false
     @State private var isSearching = false
     @State private var searchText = ""
+    @State private var showFavoritesOnly = false
     
     enum SlideDirection {
         case left, right, none
@@ -19,12 +21,18 @@ struct RecipesView: View {
     let categories = ["All"] + Recipe.Category.allCases.map(\.rawValue)
 
     private var displayedRecipes: [Recipe] {
+        var base: [Recipe]
         if isSearching && !searchText.isEmpty {
-            return recipeStore.recipes.filter {
+            base = recipeStore.recipes.filter {
                 $0.name.localizedCaseInsensitiveContains(searchText)
             }
+        } else {
+            base = recipeStore.getRecipesForCategory(categories[selectedCategory])
         }
-        return recipeStore.getRecipesForCategory(categories[selectedCategory])
+        if showFavoritesOnly {
+            base = favoritesManager.favorites(in: base)
+        }
+        return base
     }
     
     var body: some View {
@@ -49,6 +57,14 @@ struct RecipesView: View {
                     .transition(.move(edge: .trailing))
                 } else {
                     HStack(spacing: 0) {
+                        Button {
+                            withAnimation { showFavoritesOnly.toggle() }
+                        } label: {
+                            Image(systemName: showFavoritesOnly ? "star.fill" : "star")
+                                .padding(.leading)
+                                .foregroundColor(settingsManager.colors.accent)
+                        }
+
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 2) {
                                 ForEach(0..<categories.count, id: \.self) { index in
@@ -104,6 +120,11 @@ struct RecipesView: View {
                                 }
                             }
                         )
+                    }
+                    if showFavoritesOnly && displayedRecipes.isEmpty {
+                        Text("You have no favorites for this category")
+                            .foregroundColor(settingsManager.colors.textSecondary)
+                            .padding()
                     }
                 }
                 .padding()
