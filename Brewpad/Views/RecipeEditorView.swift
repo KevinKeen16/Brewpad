@@ -238,8 +238,8 @@ struct RecipeEditorView: View {
                 // If we're editing and the name changed, delete the old file
                 if let oldRecipe = existingRecipe,
                    oldRecipe.name != recipe.name {
-                    let oldFilename = oldRecipe.name.lowercased().replacingOccurrences(of: " ", with: "_")
-                    let oldFileURL = recipesDirectory.appendingPathComponent("\(oldFilename).json")
+                    let oldFilename = generateFilename(for: oldRecipe)
+                    let oldFileURL = recipesDirectory.appendingPathComponent(oldFilename)
                     if FileManager.default.fileExists(atPath: oldFileURL.path) {
                         try FileManager.default.removeItem(at: oldFileURL)
                         print("🗑️ Deleted old recipe file: \(oldFileURL.path)")
