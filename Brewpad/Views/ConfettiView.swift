@@ -5,9 +5,11 @@ struct ConfettiView: UIViewRepresentable {
     func makeUIView(context: Context) -> UIView {
         let view = UIView(frame: .zero)
         let emitter = CAEmitterLayer()
+        // Emit from the full width of the screen so the celebration feels
+        // like it originates across the entire top edge.
         emitter.emitterPosition = CGPoint(x: UIScreen.main.bounds.width / 2, y: -10)
-        emitter.emitterShape = .point
-        emitter.emitterSize = CGSize(width: 1, height: 1)
+        emitter.emitterShape = .line
+        emitter.emitterSize = CGSize(width: UIScreen.main.bounds.width, height: 1)
 
         let colors: [UIColor] = [
             .systemRed, .systemBlue, .systemYellow, .systemGreen,
