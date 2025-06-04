@@ -1,22 +1,42 @@
 import Foundation
 
 struct MeasurementConverter {
-    private static let weightRegex = try! NSRegularExpression(
-        pattern: "([0-9]+\\.?[0-9]*)g\\b",
-        options: []
-    )
-    private static let volumeRegex = try! NSRegularExpression(
-        pattern: "([0-9]+\\.?[0-9]*)ml\\b",
-        options: []
-    )
-    private static let temperatureRegex = try! NSRegularExpression(
-        pattern: "([0-9]+\\.?[0-9]*)°C\\b",
-        options: []
-    )
-    private static let lengthRegex = try! NSRegularExpression(
-        pattern: "([0-9]+\\.?[0-9]*)cm\\b",
-        options: []
-    )
+    private static let weightRegex: NSRegularExpression = {
+        guard let regex = try? NSRegularExpression(
+            pattern: "([0-9]+\\.?[0-9]*)g\\b",
+            options: []
+        ) else {
+            fatalError("Failed to compile weight regular expression")
+        }
+        return regex
+    }()
+    private static let volumeRegex: NSRegularExpression = {
+        guard let regex = try? NSRegularExpression(
+            pattern: "([0-9]+\\.?[0-9]*)ml\\b",
+            options: []
+        ) else {
+            fatalError("Failed to compile volume regular expression")
+        }
+        return regex
+    }()
+    private static let temperatureRegex: NSRegularExpression = {
+        guard let regex = try? NSRegularExpression(
+            pattern: "([0-9]+\\.?[0-9]*)°C\\b",
+            options: []
+        ) else {
+            fatalError("Failed to compile temperature regular expression")
+        }
+        return regex
+    }()
+    private static let lengthRegex: NSRegularExpression = {
+        guard let regex = try? NSRegularExpression(
+            pattern: "([0-9]+\\.?[0-9]*)cm\\b",
+            options: []
+        ) else {
+            fatalError("Failed to compile length regular expression")
+        }
+        return regex
+    }()
 
     private static let patterns: [(NSRegularExpression, (Double) -> String)] = [
         // Weight: grams
