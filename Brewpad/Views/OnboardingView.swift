@@ -177,6 +177,7 @@ struct UserSetupView: View {
 
 struct TutorialCardView: View {
     let card: TutorialCard
+    @EnvironmentObject private var settingsManager: SettingsManager
     
     var body: some View {
         VStack(spacing: 30) {

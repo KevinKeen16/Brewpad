@@ -108,6 +108,7 @@ struct TutorialCardsView: View {
 
 struct CardView: View {
     let card: TutorialCard
+    @EnvironmentObject private var settingsManager: SettingsManager
     
     var body: some View {
         VStack(spacing: 30) {
