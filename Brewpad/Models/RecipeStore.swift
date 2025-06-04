@@ -8,12 +8,14 @@ class RecipeStore: ObservableObject {
     @Published var showServerError = false
     @Published var serverResponse: String?
     private let recipesDirectoryName = "Recipes"
+    private let serverBaseURL = "https://bprs.mirreravencd.com/recipes"
     private var hasLoadedRecipes = false
     private var minimumSplashTimeElapsed = false
     
     init() {
         // Start loading immediately
         loadRecipes()
+        fetchServerRecipes()
         checkServerConnection()
         
         // Ensure minimum splash screen duration
@@ -53,6 +55,96 @@ class RecipeStore: ObservableObject {
                     self.serverResponse = "No response"
                     self.showServerError = true
                 }
+            }
+        }.resume()
+    }
+
+    /// Fetches any new recipes from the Brewpad remote server and stores them
+    /// locally. If new recipes are downloaded the local recipe list will be
+    /// reloaded.
+    private func fetchServerRecipes() {
+        guard let indexURL = URL(string: "\(serverBaseURL)/index.json") else { return }
+
+        URLSession.shared.dataTask(with: indexURL) { data, response, error in
+            guard let data = data, error == nil,
+                  let fileNames = try? JSONDecoder().decode([String].self, from: data) else {
+                print("❌ Failed to fetch recipe index: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+
+            let dispatchGroup = DispatchGroup()
+            var downloaded = false
+
+            for name in fileNames where name.hasSuffix(".json") {
+                dispatchGroup.enter()
+                self.downloadRecipeIfNeeded(named: name) { didDownload in
+                    if didDownload { downloaded = true }
+                    dispatchGroup.leave()
+                }
+            }
+
+            dispatchGroup.notify(queue: .main) {
+                if downloaded {
+                    self.loadRecipes()
+                }
+            }
+        }.resume()
+    }
+
+    /// Downloads a single recipe file from the server if it doesn't already
+    /// exist in the user's local storage.
+    private func downloadRecipeIfNeeded(named fileName: String, completion: @escaping (Bool) -> Void) {
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
+              let downloadURL = URL(string: "\(serverBaseURL)/\(fileName)") else {
+            completion(false)
+            return
+        }
+
+        let recipesDirectory = documentsDirectory.appendingPathComponent(recipesDirectoryName)
+
+        if !FileManager.default.fileExists(atPath: recipesDirectory.path) {
+            try? FileManager.default.createDirectory(at: recipesDirectory, withIntermediateDirectories: true)
+        }
+
+        let destinationURL = recipesDirectory.appendingPathComponent(fileName)
+
+        // Skip download if the file already exists
+        guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
+            completion(false)
+            return
+        }
+
+        URLSession.shared.dataTask(with: downloadURL) { data, _, error in
+            guard let data = data, error == nil else {
+                print("❌ Failed to download recipe \(fileName): \(error?.localizedDescription ?? "Unknown error")")
+                completion(false)
+                return
+            }
+
+            var recipeData = data
+            if var recipe = try? JSONDecoder().decode(Recipe.self, from: data),
+               recipe.creator == "Unknown" {
+                // Default creator when missing
+                recipe = Recipe(
+                    id: recipe.id,
+                    name: recipe.name,
+                    category: recipe.category,
+                    description: recipe.description,
+                    ingredients: recipe.ingredients,
+                    preparations: recipe.preparations,
+                    isBuiltIn: recipe.isBuiltIn,
+                    creator: "Brewpad",
+                    isFeatured: recipe.isFeatured
+                )
+                recipeData = (try? JSONEncoder().encode(recipe)) ?? data
+            }
+
+            do {
+                try recipeData.write(to: destinationURL)
+                completion(true)
+            } catch {
+                print("❌ Failed to save recipe \(fileName): \(error.localizedDescription)")
+                completion(false)
             }
         }.resume()
     }
