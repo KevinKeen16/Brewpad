@@ -6,8 +6,8 @@ struct ConfettiView: UIViewRepresentable {
         let view = UIView(frame: .zero)
         let emitter = CAEmitterLayer()
         emitter.emitterPosition = CGPoint(x: UIScreen.main.bounds.width / 2, y: -10)
-        emitter.emitterShape = .line
-        emitter.emitterSize = CGSize(width: UIScreen.main.bounds.width, height: 2)
+        emitter.emitterShape = .point
+        emitter.emitterSize = CGSize(width: 1, height: 1)
 
         let colors: [UIColor] = [
             .systemRed, .systemBlue, .systemYellow, .systemGreen,
@@ -21,6 +21,7 @@ struct ConfettiView: UIViewRepresentable {
             cell.velocity = 200
             cell.velocityRange = 100
             cell.emissionLongitude = .pi / 2
+            cell.emissionRange = .pi / 4
             cell.yAcceleration = 300
             cell.spin = 4
             cell.spinRange = 8
