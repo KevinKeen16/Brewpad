@@ -23,11 +23,11 @@ struct SplashScreen: View {
         if settingsManager.isDebugModeEnabled {
             return HolidayTheme.getColor(for: settingsManager.debugHoliday)
         }
-        
+
         // Check for actual holiday
         let today = Calendar.current.dateComponents([.month, .day], from: Date())
         guard let month = today.month, let day = today.day else {
-            return HolidayTheme.getColor(for: nil)
+            return settingsManager.colors.accent
         }
         
         let holiday: SettingsManager.Holiday? = {
@@ -44,7 +44,11 @@ struct SplashScreen: View {
             }
         }()
         
-        return HolidayTheme.getColor(for: holiday)
+        if let holiday = holiday {
+            return HolidayTheme.getColor(for: holiday)
+        } else {
+            return settingsManager.colors.accent
+        }
     }
     
     var body: some View {
@@ -61,11 +65,12 @@ struct SplashScreen: View {
                 Text("Brewpad")
                     .font(.largeTitle)
                     .bold()
+                    .foregroundColor(settingsManager.colors.textPrimary)
 
                 // Quip Text
                 Text(action?.quip ?? currentQuip)
                     .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(settingsManager.colors.textSecondary)
                     .multilineTextAlignment(.center)
                     .opacity(quipOpacity)
                     .animation(.easeIn(duration: 0.5).delay(0.5), value: quipOpacity)
@@ -89,7 +94,7 @@ struct SplashScreen: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: .systemBackground))
+        .background(settingsManager.colors.background)
     }
     
     private func startShakeAnimation() {
