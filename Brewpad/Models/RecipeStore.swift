@@ -6,6 +6,7 @@ class RecipeStore: ObservableObject {
     @Published private(set) var userRecipes: [Recipe] = []
     @Published private(set) var isInitialized = false
     @Published var showServerError = false
+    @Published var serverResponse: String?
     private let recipesDirectoryName = "Recipes"
     private var hasLoadedRecipes = false
     private var minimumSplashTimeElapsed = false
@@ -30,15 +31,26 @@ class RecipeStore: ObservableObject {
         }
     }
 
-    private func checkServerConnection() {
+    func checkServerConnection() {
         guard let url = URL(string: "https://bprs.mirreravencd.com") else { return }
 
-        URLSession.shared.dataTask(with: url) { _, response, error in
+        URLSession.shared.dataTask(with: url) { data, response, error in
             DispatchQueue.main.async {
-                if let httpResponse = response as? HTTPURLResponse,
-                   (200...299).contains(httpResponse.statusCode), error == nil {
-                    self.showServerError = false
+                if let httpResponse = response as? HTTPURLResponse {
+                    let statusCode = httpResponse.statusCode
+                    var message = "Status: \(statusCode)"
+                    if let data = data,
+                       let body = String(data: data, encoding: .utf8),
+                       !body.isEmpty {
+                        message += "\n\n" + body
+                    }
+                    self.serverResponse = message
+                    self.showServerError = !(200...299).contains(statusCode) || error != nil
+                } else if let error = error {
+                    self.serverResponse = "Error: \(error.localizedDescription)"
+                    self.showServerError = true
                 } else {
+                    self.serverResponse = "No response"
                     self.showServerError = true
                 }
             }
