@@ -64,10 +64,12 @@ struct ContentView: View {
                         RecipeEditorView(recipe: recipe, isImporting: true)
                     }
                 }
+                .tint(settingsManager.colors.accent)
             } else {
                 SplashScreen()
             }
         }
+        .background(settingsManager.colors.background)
         .animation(.easeInOut(duration: 0.3), value: recipeStore.isInitialized)
         .animation(.easeInOut(duration: 0.3), value: settingsManager.hasCompletedOnboarding)
         .alert("Server Not Reachable", isPresented: $recipeStore.showServerError) {

@@ -60,12 +60,13 @@ class SettingsManager: ObservableObject {
         case system = "System"
         case light = "Light"
         case dark = "Dark"
+        case brewpadDark = "Brewpad Dark"
         
         var colorScheme: ColorScheme? {
             switch self {
             case .system: return nil
             case .light: return .light
-            case .dark: return .dark
+            case .dark, .brewpadDark: return .dark
             }
         }
     }
@@ -73,6 +74,15 @@ class SettingsManager: ObservableObject {
     @Published var theme: Theme = .system {
         didSet {
             UserDefaults.standard.set(theme.rawValue, forKey: "theme")
+        }
+    }
+
+    var colors: ThemeColors {
+        switch theme {
+        case .system: return ThemeColors.system
+        case .light: return ThemeColors.light
+        case .dark: return ThemeColors.dark
+        case .brewpadDark: return ThemeColors.brewpadDark
         }
     }
     

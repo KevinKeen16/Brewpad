@@ -10,14 +10,14 @@ struct TutorialCardsView: View {
     
     var body: some View {
         ZStack {
-            Color(uiColor: .systemBackground)
+            settingsManager.colors.background
                 .ignoresSafeArea()
             
             VStack(spacing: 30) {
                 // Welcome Icon
                 Image(systemName: "mug.fill")
                     .font(.system(size: 60))
-                    .foregroundColor(.blue)
+                    .foregroundColor(settingsManager.colors.accent)
                 
                 // Tutorial Cards
                 ZStack {
@@ -113,7 +113,7 @@ struct CardView: View {
         VStack(spacing: 30) {
             Image(systemName: card.icon)
                 .font(.system(size: 50))
-                .foregroundColor(.blue)
+                .foregroundColor(settingsManager.colors.accent)
             
             VStack(spacing: 10) {
                 Text(card.title)
@@ -122,7 +122,7 @@ struct CardView: View {
                 
                 Text(card.description)
                     .font(.body)
-                    .foregroundColor(.gray)
+                    .foregroundColor(settingsManager.colors.textSecondary)
                     .multilineTextAlignment(.center)
             }
         }
