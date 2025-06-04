@@ -4,7 +4,6 @@ struct OnboardingView: View {
     @EnvironmentObject private var settingsManager: SettingsManager
     @State private var currentStep = 0
     @State private var username = ""
-    @State private var dragState = DragState.inactive
     
     private let tutorialCards = [
         TutorialCard(
