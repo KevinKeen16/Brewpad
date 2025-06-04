@@ -5,6 +5,7 @@ struct SplashScreen: View {
     @State private var rotationAngle: Double = 0
     @State private var quipOpacity: Double = 0
     @State private var currentQuip: String = ""
+    @State private var showConfetti: Bool = false
     private var isBirthday: Bool {
         guard let birthday = settingsManager.birthdate else { return false }
         let calendar = Calendar.current
@@ -54,6 +55,9 @@ struct SplashScreen: View {
                     .rotationEffect(.degrees(rotationAngle))
                     .onAppear {
                         startShakeAnimation()
+                        if isBirthday {
+                            showConfetti = true
+                        }
                     }
 
                 Text("Brewpad")
@@ -75,7 +79,7 @@ struct SplashScreen: View {
                     }
             }
 
-            if isBirthday {
+            if isBirthday && showConfetti {
                 ConfettiView()
                     .ignoresSafeArea()
             }
