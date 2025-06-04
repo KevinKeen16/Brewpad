@@ -4,6 +4,7 @@ struct RecipeCard: View {
     @EnvironmentObject private var settingsManager: SettingsManager
     @EnvironmentObject private var notesManager: NotesManager
     @EnvironmentObject private var recipeStore: RecipeStore
+    @EnvironmentObject private var favoritesManager: FavoritesManager
     @State private var showingNoteSheet = false
     @State private var selectedSection = 0
     @State private var showingDeleteConfirmation = false
@@ -70,33 +71,41 @@ struct RecipeCard: View {
                 )
             }
             
-            Button(action: onTap) {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(recipe.name)
-                            .font(.headline)
-                        HStack {
-                            Text(recipe.category.rawValue)
-                                .font(.subheadline)
-                                .foregroundColor(settingsManager.colors.textSecondary)
-                            Text("•")
-                                .foregroundColor(settingsManager.colors.textSecondary)
-                            Text("by \(recipe.creator)")
-                                .font(.subheadline)
-                                .foregroundColor(settingsManager.colors.textSecondary)
-                        }
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(recipe.name)
+                        .font(.headline)
+                    HStack {
+                        Text(recipe.category.rawValue)
+                            .font(.subheadline)
+                            .foregroundColor(settingsManager.colors.textSecondary)
+                        Text("•")
+                            .foregroundColor(settingsManager.colors.textSecondary)
+                        Text("by \(recipe.creator)")
+                            .font(.subheadline)
+                            .foregroundColor(settingsManager.colors.textSecondary)
                     }
-                    Spacer()
-                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .foregroundColor(settingsManager.colors.accent)
-                        .rotationEffect(.degrees(isExpanded ? 0 : 180))
-                        .animation(.spring(response: 0.2), value: isExpanded)
                 }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(settingsManager.colors.divider.opacity(0.1))
-                .cornerRadius(10)
+                Spacer()
+                if isExpanded {
+                    Button {
+                        favoritesManager.toggleFavorite(recipe.id)
+                    } label: {
+                        Image(systemName: favoritesManager.isFavorite(recipe.id) ? "star.fill" : "star")
+                            .foregroundColor(settingsManager.colors.accent)
+                    }
+                }
+                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                    .foregroundColor(settingsManager.colors.accent)
+                    .rotationEffect(.degrees(isExpanded ? 0 : 180))
+                    .animation(.spring(response: 0.2), value: isExpanded)
             }
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(settingsManager.colors.divider.opacity(0.1))
+            .cornerRadius(10)
+            .contentShape(Rectangle())
+            .onTapGesture(perform: onTap)
             .contextMenu {
                 if !recipe.isBuiltIn && recipe.creator != "Brewpad" {
                     Button(role: .destructive) {
