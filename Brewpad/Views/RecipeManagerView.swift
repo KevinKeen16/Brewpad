@@ -326,6 +326,7 @@ struct ActionButton: View {
 struct RecipeListView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var recipeStore: RecipeStore
+    @EnvironmentObject private var settingsManager: SettingsManager
     @State private var showingDeleteConfirmation = false
     @State private var recipeToDelete: Recipe?
     
