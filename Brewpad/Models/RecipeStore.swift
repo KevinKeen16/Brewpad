@@ -36,17 +36,11 @@ class RecipeStore: ObservableObject {
     func checkServerConnection() {
         guard let url = URL(string: "https://bprs.mirreravencd.com") else { return }
 
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        URLSession.shared.dataTask(with: url) { _, response, error in
             DispatchQueue.main.async {
                 if let httpResponse = response as? HTTPURLResponse {
                     let statusCode = httpResponse.statusCode
-                    var message = "Status: \(statusCode)"
-                    if let data = data,
-                       let body = String(data: data, encoding: .utf8),
-                       !body.isEmpty {
-                        message += "\n\n" + body
-                    }
-                    self.serverResponse = message
+                    self.serverResponse = "Status: \(statusCode)"
                     self.showServerError = !(200...299).contains(statusCode) || error != nil
                 } else if let error = error {
                     self.serverResponse = "Error: \(error.localizedDescription)"
