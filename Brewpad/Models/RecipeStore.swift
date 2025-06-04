@@ -57,19 +57,21 @@ class RecipeStore: ObservableObject {
     /// locally. If new recipes are downloaded the local recipe list will be
     /// reloaded.
     private func fetchServerRecipes() {
-        guard let indexURL = URL(string: "\(serverBaseURL)/index.json") else { return }
+        guard let listingURL = URL(string: serverBaseURL) else { return }
 
-        URLSession.shared.dataTask(with: indexURL) { data, response, error in
+        URLSession.shared.dataTask(with: listingURL) { data, response, error in
             guard let data = data, error == nil,
-                  let fileNames = try? JSONDecoder().decode([String].self, from: data) else {
-                print("❌ Failed to fetch recipe index: \(error?.localizedDescription ?? "Unknown error")")
+                  let content = String(data: data, encoding: .utf8) else {
+                print("❌ Failed to fetch recipe listing: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
+
+            let fileNames = self.extractJSONFileNames(from: content)
 
             let dispatchGroup = DispatchGroup()
             var downloaded = false
 
-            for name in fileNames where name.hasSuffix(".json") {
+            for name in fileNames {
                 dispatchGroup.enter()
                 self.downloadRecipeIfNeeded(named: name) { didDownload in
                     if didDownload { downloaded = true }
@@ -85,6 +87,19 @@ class RecipeStore: ObservableObject {
         }.resume()
     }
 
+    private func extractJSONFileNames(from content: String) -> [String] {
+        let pattern = "[A-Za-z0-9_./-]+\\.json"
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else { return [] }
+        let range = NSRange(content.startIndex..<content.endIndex, in: content)
+        let matches = regex.matches(in: content, options: [], range: range)
+        let names = matches.compactMap { match -> String? in
+            guard let range = Range(match.range, in: content) else { return nil }
+            var name = String(content[range])
+            if let last = name.split(separator: "/").last { name = String(last) }
+            return name
+        }
+        return Array(Set(names))
+    }
     /// Downloads a single recipe file from the server if it doesn't already
     /// exist in the user's local storage.
     private func downloadRecipeIfNeeded(named fileName: String, completion: @escaping (Bool) -> Void) {
