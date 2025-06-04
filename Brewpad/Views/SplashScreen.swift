@@ -71,30 +71,9 @@ struct SplashScreen: View {
     }
     
     private func startShakeAnimation() {
-        withAnimation(.easeInOut(duration: 0.1)) {
-            rotationAngle = -10
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            withAnimation(.easeInOut(duration: 0.1)) {
-                rotationAngle = 10
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                withAnimation(.easeInOut(duration: 0.1)) {
-                    rotationAngle = -10
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    withAnimation(.easeInOut(duration: 0.1)) {
-                        rotationAngle = 0
-                    }
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                        startShakeAnimation()
-                    }
-                }
-            }
+        rotationAngle = -10
+        withAnimation(.easeInOut(duration: 0.1).repeatForever(autoreverses: true)) {
+            rotationAngle = 10
         }
     }
     
