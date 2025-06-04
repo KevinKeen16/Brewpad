@@ -103,20 +103,33 @@ class RecipeStore: ObservableObject {
 
     /// Downloads a list of recipes sequentially. Each recipe will be downloaded
     /// one by one to avoid overwhelming the network session. Once all downloads
-    /// are complete the provided completion handler will be called.
-    private func downloadRecipesSequentially(_ names: [String], index: Int = 0, completion: @escaping () -> Void) {
-        guard index < names.count else {
+    /// are complete the provided completion handler will be called. Uses an
+    /// iterative loop rather than recursion to avoid stack growth.
+    private func downloadRecipesSequentially(_ names: [String], completion: @escaping () -> Void) {
+        guard !names.isEmpty else {
             print("🏁 Completed sequential downloads")
             completion()
             return
         }
 
-        let currentName = names[index]
-        print("⬇️ Downloading recipe \(currentName) (\(index + 1)/\(names.count))")
+        Task { [weak self] in
+            guard let self = self else { return }
 
-        downloadRecipe(named: currentName) { [weak self] in
-            print("✅ Finished download of \(currentName)")
-            self?.downloadRecipesSequentially(names, index: index + 1, completion: completion)
+            for (index, name) in names.enumerated() {
+                print("⬇️ Downloading recipe \(name) (\(index + 1)/\(names.count))")
+
+                await withCheckedContinuation { continuation in
+                    self.downloadRecipe(named: name) {
+                        print("✅ Finished download of \(name)")
+                        continuation.resume()
+                    }
+                }
+            }
+
+            print("🏁 Completed sequential downloads")
+            await MainActor.run {
+                completion()
+            }
         }
     }
 
