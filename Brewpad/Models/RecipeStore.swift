@@ -137,6 +137,8 @@ class RecipeStore: ObservableObject {
     /// Removes any server-provided recipes that no longer exist on the server.
     /// - Parameter serverNames: The list of recipe filenames currently available on the server.
     private func removeDeletedServerRecipes(keeping serverNames: [String]) {
+        // Convert to a set for O(1) lookups
+        let serverNameSet = Set(serverNames)
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             return
         }
@@ -148,7 +150,7 @@ class RecipeStore: ObservableObject {
 
         for url in localServerFiles {
             let name = url.lastPathComponent
-            if !serverNames.contains(name) {
+            if !serverNameSet.contains(name) {
                 do {
                     try FileManager.default.removeItem(at: url)
                     print("🗑️ Removed server-deleted recipe: \(name)")
