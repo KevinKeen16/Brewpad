@@ -80,6 +80,12 @@ class RecipeStore: ObservableObject {
 
             print("📜 Found \(fileNames.count) recipes: \(fileNames)")
 
+            // Remove any server-imported recipes that are no longer listed
+            self.removeDeletedServerRecipes(keeping: fileNames)
+            DispatchQueue.main.async {
+                self.loadRecipes()
+            }
+
             DispatchQueue.main.async {
                 self.serverFetchedRecipes = fileNames
             }
@@ -126,6 +132,31 @@ class RecipeStore: ObservableObject {
             return name
         }
         return Array(Set(names))
+    }
+
+    /// Removes any server-provided recipes that no longer exist on the server.
+    /// - Parameter serverNames: The list of recipe filenames currently available on the server.
+    private func removeDeletedServerRecipes(keeping serverNames: [String]) {
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            return
+        }
+
+        let recipesDirectory = documentsDirectory.appendingPathComponent(recipesDirectoryName)
+        guard let fileURLs = try? FileManager.default.contentsOfDirectory(at: recipesDirectory, includingPropertiesForKeys: nil) else { return }
+
+        let localServerFiles = fileURLs.filter { $0.pathExtension.lowercased() == "brewpadrecipe" }
+
+        for url in localServerFiles {
+            let name = url.lastPathComponent
+            if !serverNames.contains(name) {
+                do {
+                    try FileManager.default.removeItem(at: url)
+                    print("🗑️ Removed server-deleted recipe: \(name)")
+                } catch {
+                    print("❌ Failed to remove server-deleted recipe \(name): \(error.localizedDescription)")
+                }
+            }
+        }
     }
     /// Downloads a single recipe file from the server and stores it locally.
     /// Any existing file with the same name will be overwritten.
