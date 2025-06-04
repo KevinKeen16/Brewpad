@@ -15,59 +15,7 @@ struct RecipeCard: View {
     private let expandedHeight: CGFloat = 300
     
     var body: some View {
-        ZStack(alignment: .top) {
-            if isExpanded {
-                VStack(spacing: 0) {
-                    Spacer(minLength: 70)
-                    
-                    TabView(selection: $selectedSection) {
-                        ScrollView {
-                            descriptionView
-                        }
-                        .tag(0)
-                        
-                        ScrollView {
-                            ingredientsView
-                        }
-                        .tag(1)
-                        
-                        ScrollView {
-                            preparationView
-                        }
-                        .tag(2)
-                        
-                        ScrollView {
-                            notesView
-                        }
-                        .tag(3)
-                    }
-                    .tabViewStyle(.page(indexDisplayMode: .never))
-                    .frame(height: expandedHeight)
-                    
-                    HStack(spacing: 8) {
-                        ForEach(0..<4) { index in
-                            Circle()
-                                .fill(selectedSection == index ? Color.blue : Color.gray.opacity(0.3))
-                                .frame(width: 6, height: 6)
-                        }
-                    }
-                    .padding(.vertical, 8)
-                }
-                .frame(maxWidth: .infinity)
-                .background(Color.gray.opacity(0.05))
-                .cornerRadius(10)
-                .transition(
-                    .asymmetric(
-                        insertion: .move(edge: .top)
-                            .combined(with: .opacity)
-                            .animation(.spring(response: 0.35, dampingFraction: 0.7)),
-                        removal: .move(edge: .top)
-                            .combined(with: .opacity)
-                            .animation(.spring(response: 0.3, dampingFraction: 0.8))
-                    )
-                )
-            }
-            
+        VStack(spacing: 0) {
             Button(action: onTap) {
                 HStack {
                     VStack(alignment: .leading) {
@@ -105,8 +53,52 @@ struct RecipeCard: View {
                     }
                 }
             }
+
+            VStack(spacing: 0) {
+                Spacer(minLength: 70)
+
+                TabView(selection: $selectedSection) {
+                    ScrollView {
+                        descriptionView
+                    }
+                    .tag(0)
+
+                    ScrollView {
+                        ingredientsView
+                    }
+                    .tag(1)
+
+                    ScrollView {
+                        preparationView
+                    }
+                    .tag(2)
+
+                    ScrollView {
+                        notesView
+                    }
+                    .tag(3)
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .frame(height: expandedHeight)
+
+                HStack(spacing: 8) {
+                    ForEach(0..<4) { index in
+                        Circle()
+                            .fill(selectedSection == index ? Color.blue : Color.gray.opacity(0.3))
+                            .frame(width: 6, height: 6)
+                    }
+                }
+                .padding(.vertical, 8)
+            }
+            .frame(maxWidth: .infinity)
+            .background(Color.gray.opacity(0.05))
+            .cornerRadius(10)
+            .frame(height: isExpanded ? expandedHeight + 100 : 0)
+            .clipped()
+            .opacity(isExpanded ? 1 : 0)
         }
         .zIndex(isExpanded ? 1 : 0)
+        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: isExpanded)
         .sheet(isPresented: $showingNoteSheet) {
             AddNoteView(recipe: recipe)
         }
