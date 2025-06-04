@@ -210,6 +210,7 @@ struct RecipeCard: View {
 }
 
 struct NoteBubble: View {
+    @EnvironmentObject private var settingsManager: SettingsManager
     @EnvironmentObject private var notesManager: NotesManager
     @State private var showingDeleteConfirmation = false
     let note: RecipeNote
