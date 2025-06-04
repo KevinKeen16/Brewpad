@@ -203,12 +203,15 @@ struct RecipeEditorView: View {
         print("💾 Starting recipe save process")
         
         let recipe = Recipe(
+            id: existingRecipe?.id ?? UUID(),
             name: recipeName,
             category: category,
             description: description,
             ingredients: ingredients.filter { !$0.isEmpty },
             preparations: preparations.filter { !$0.isEmpty },
-            creator: isImporting ? existingRecipe?.creator ?? "Unknown" : settingsManager.username ?? "Unknown"
+            isBuiltIn: existingRecipe?.isBuiltIn ?? false,
+            creator: isImporting ? existingRecipe?.creator ?? "Unknown" : settingsManager.username ?? "Unknown",
+            isFeatured: existingRecipe?.isFeatured ?? false
         )
         print("📝 Created recipe object: \(recipe.name)")
         
