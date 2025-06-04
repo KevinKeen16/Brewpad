@@ -31,6 +31,11 @@ struct OnboardingView: View {
             title: "Growing Collection",
             description: "Brewpad is constantly evolving! Look forward to regular recipe additions, seasonal specials, and community favorites. Check back often to discover new drinks and brewing techniques.",
             icon: "sparkles"
+        ),
+        TutorialCard(
+            title: "Using Recipe Cards",
+            description: "Tap a card to open its recipe. To delete one of your own recipes, tap and hold the card until the menu appears. This option is only available for recipes you've created.",
+            icon: "hand.tap"
         )
     ]
     
