@@ -98,7 +98,7 @@ struct RecipeCard: View {
                 .cornerRadius(10)
             }
             .contextMenu {
-                if !recipe.isBuiltIn { // Only show delete for user-created recipes
+                if !recipe.isBuiltIn && recipe.creator != "Brewpad" {
                     Button(role: .destructive) {
                         print("🗑️ Delete button tapped for recipe: \(recipe.name)")
                         showingDeleteConfirmation = true

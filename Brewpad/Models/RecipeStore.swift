@@ -5,6 +5,7 @@ class RecipeStore: ObservableObject {
     @Published private(set) var recipes: [Recipe] = []
     @Published private(set) var userRecipes: [Recipe] = []
     @Published private(set) var isInitialized = false
+    @Published var showServerError = false
     private let recipesDirectoryName = "Recipes"
     private var hasLoadedRecipes = false
     private var minimumSplashTimeElapsed = false
@@ -12,6 +13,7 @@ class RecipeStore: ObservableObject {
     init() {
         // Start loading immediately
         loadRecipes()
+        checkServerConnection()
         
         // Ensure minimum splash screen duration
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -26,6 +28,21 @@ class RecipeStore: ObservableObject {
                 self.isInitialized = true
             }
         }
+    }
+
+    private func checkServerConnection() {
+        guard let url = URL(string: "https://bprs.mirreravencd.com") else { return }
+
+        URLSession.shared.dataTask(with: url) { _, response, error in
+            DispatchQueue.main.async {
+                if let httpResponse = response as? HTTPURLResponse,
+                   (200...299).contains(httpResponse.statusCode), error == nil {
+                    self.showServerError = false
+                } else {
+                    self.showServerError = true
+                }
+            }
+        }.resume()
     }
     
     func loadRecipes() {
@@ -125,9 +142,9 @@ class RecipeStore: ObservableObject {
     func deleteRecipe(_ recipe: Recipe) {
         print("🗑️ Starting deletion process for recipe: \(recipe.name)")
         
-        // Only allow deletion of user recipes
-        guard !recipe.isBuiltIn else {
-            print("❌ Cannot delete built-in recipe: \(recipe.name)")
+        // Only allow deletion of user recipes that are not published by Brewpad
+        guard !recipe.isBuiltIn && recipe.creator != "Brewpad" else {
+            print("❌ Cannot delete Brewpad recipe: \(recipe.name)")
             return
         }
         
