@@ -22,25 +22,33 @@ struct ContentView: View {
             } else if recipeStore.isInitialized {
                 TabView(selection: $selectedTab) {
                     NavigationView {
+                        FeaturedRecipesView()
+                    }
+                    .tabItem {
+                        Label("Featured", systemImage: "star.fill")
+                    }
+                    .tag(0)
+
+                    NavigationView {
                         RecipesView()
                     }
                     .tabItem {
                         Label("Recipes", systemImage: "book.fill")
                     }
-                    .tag(0)
-                    
+                    .tag(1)
+
                     RecipeManagerView()
                         .tabItem {
                             Label("Manage", systemImage: "square.and.pencil")
                         }
-                        .tag(1)
-                    
+                        .tag(2)
+
                     InfoView()
                         .tabItem {
                             Label("Info", systemImage: "info.circle.fill")
                         }
-                        .tag(2)
-                    
+                        .tag(3)
+
                     NavigationView {
                         SettingsView()
                             .navigationTitle("Settings")
@@ -48,7 +56,7 @@ struct ContentView: View {
                     .tabItem {
                         Label("Settings", systemImage: "gear")
                     }
-                    .tag(3)
+                    .tag(4)
                 }
                 .sheet(isPresented: $appState.shouldShowImport) {
                     if let recipe = appState.importedRecipe {
