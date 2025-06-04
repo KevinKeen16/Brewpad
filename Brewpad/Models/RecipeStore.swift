@@ -78,20 +78,27 @@ class RecipeStore: ObservableObject {
                 self.serverFetchedRecipes = fileNames
             }
 
-            let dispatchGroup = DispatchGroup()
-
-            for name in fileNames {
-                dispatchGroup.enter()
-                self.downloadRecipe(named: name) {
-                    dispatchGroup.leave()
+            self.downloadRecipesSequentially(fileNames) {
+                DispatchQueue.main.async {
+                    self.hasFetchedServerRecipes = true
+                    self.loadRecipes()
                 }
             }
-
-            dispatchGroup.notify(queue: .main) {
-                self.hasFetchedServerRecipes = true
-                self.loadRecipes()
-            }
         }.resume()
+    }
+
+    /// Downloads a list of recipes sequentially. Each recipe will be downloaded
+    /// one by one to avoid overwhelming the network session. Once all downloads
+    /// are complete the provided completion handler will be called.
+    private func downloadRecipesSequentially(_ names: [String], index: Int = 0, completion: @escaping () -> Void) {
+        guard index < names.count else {
+            completion()
+            return
+        }
+
+        downloadRecipe(named: names[index]) { [weak self] in
+            self?.downloadRecipesSequentially(names, index: index + 1, completion: completion)
+        }
     }
 
     private func extractRecipeFileNames(from content: String) -> [String] {
