@@ -64,7 +64,7 @@ class RecipeStore: ObservableObject {
         URLSession.shared.dataTask(with: listingURL) { data, response, error in
             guard let data = data, error == nil,
                   let content = String(data: data, encoding: .utf8) else {
-                print("❌ Failed to fetch recipe listing: \(error?.localizedDescription ?? \"Unknown error\")")
+                print("❌ Failed to fetch recipe listing: \(error?.localizedDescription ?? "Unknown error")")
                 DispatchQueue.main.async {
                     self.hasFetchedServerRecipes = true
                     self.checkInitialization()
