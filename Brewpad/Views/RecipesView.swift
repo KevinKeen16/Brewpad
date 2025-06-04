@@ -83,6 +83,7 @@ struct RecipesView: View {
         slideDirection = newIndex > selectedCategory ? .right : .left
         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
             selectedCategory = newIndex
+            expandedRecipe = nil
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             slideDirection = .none
