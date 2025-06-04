@@ -38,7 +38,7 @@ class SettingsManager: ObservableObject {
     @Published var birthdate: Date? {
         didSet {
             UserDefaults.standard.set(birthdate, forKey: "birthdate")
-            isOver18 = calculateIsOver18(from: birthdate)
+            isOver18 = Self.calculateIsOver18(from: birthdate)
         }
     }
 
@@ -89,7 +89,7 @@ class SettingsManager: ObservableObject {
 
         if let savedDate = UserDefaults.standard.object(forKey: "birthdate") as? Date {
             self.birthdate = savedDate
-            self.isOver18 = calculateIsOver18(from: savedDate)
+            self.isOver18 = Self.calculateIsOver18(from: savedDate)
         } else {
             self.birthdate = nil
             // Support older versions that stored the boolean directly
@@ -104,7 +104,7 @@ class SettingsManager: ObservableObject {
         }
     }
 
-    private func calculateIsOver18(from date: Date?) -> Bool {
+    private static func calculateIsOver18(from date: Date?) -> Bool {
         guard let date else { return false }
         if let years = Calendar.current.dateComponents([.year], from: date, to: Date()).year {
             return years >= 18
