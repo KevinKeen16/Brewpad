@@ -12,6 +12,11 @@ struct OnboardingView: View {
             icon: "book.fill"
         ),
         TutorialCard(
+            title: "Using Recipe Cards",
+            description: "Tap a card to open its recipe. To delete one of your own recipes, tap and hold the card until the menu appears. This option is only available for recipes you've created.",
+            icon: "hand.tap"
+        ),
+        TutorialCard(
             title: "Save Favorites",
             description: "Found a recipe you love? Add it to your favorites for quick access. Rate your drinks, add personal notes, and build your own collection of go-to beverages.",
             icon: "star.fill"
@@ -30,11 +35,6 @@ struct OnboardingView: View {
             title: "Growing Collection",
             description: "Brewpad is constantly evolving! Look forward to regular recipe additions, seasonal specials, and community favorites. Check back often to discover new drinks and brewing techniques.",
             icon: "sparkles"
-        ),
-        TutorialCard(
-            title: "Using Recipe Cards",
-            description: "Tap a card to open its recipe. To delete one of your own recipes, tap and hold the card until the menu appears. This option is only available for recipes you've created.",
-            icon: "hand.tap"
         )
     ]
     
@@ -48,24 +48,35 @@ struct OnboardingView: View {
                 TutorialCardsView(cards: tutorialCards)
             } else {
                 // Show full onboarding with user setup first
-                let totalSteps = tutorialCards.count + 2
+                let totalSteps = tutorialCards.count + 3
                 TabView(selection: $currentStep) {
                     // User Setup
                     UserSetupView(username: $username)
                         .tag(0)
 
+                    // Measurement Units
+                    MeasurementSelectionView()
+                        .tag(1)
+
                     // Theme Selection
                     ThemeSelectionView()
-                        .tag(1)
+                        .tag(2)
 
                     // Tutorial Cards
                     ForEach(Array(tutorialCards.enumerated()), id: \.element.id) { index, card in
                         TutorialCardView(card: card)
-                            .tag(index + 2)
+                            .tag(index + 3)
                     }
                 }
                 .tabViewStyle(.page)
                 .indexViewStyle(.page(backgroundDisplayMode: .always))
+                .onChange(of: currentStep) { oldValue, newValue in
+                    if newValue > 0 && username.isEmpty {
+                        withAnimation {
+                            currentStep = 0
+                        }
+                    }
+                }
                 
                 // Navigation Buttons
                 VStack {
@@ -181,6 +192,36 @@ struct UserSetupView: View {
                 isUsernameFocused = true
             }
         }
+    }
+}
+
+struct MeasurementSelectionView: View {
+    @EnvironmentObject private var settingsManager: SettingsManager
+
+    var body: some View {
+        VStack(spacing: 30) {
+            Image(systemName: "ruler")
+                .font(.system(size: 60))
+                .foregroundColor(settingsManager.colors.accent)
+
+            Text("Measurement Units")
+                .font(.title)
+                .bold()
+
+            VStack(spacing: 20) {
+                Text("Choose your preferred measurement system. You can change this later in Settings.")
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(settingsManager.colors.textSecondary)
+                    .padding(.horizontal)
+
+                Picker("Units", selection: $settingsManager.useMetricUnits) {
+                    Text("Metric").tag(true)
+                    Text("Imperial").tag(false)
+                }
+                .pickerStyle(.segmented)
+            }
+        }
+        .padding()
     }
 }
 
