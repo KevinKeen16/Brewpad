@@ -202,13 +202,19 @@ struct RecipeEditorView: View {
     private func saveRecipe() {
         print("💾 Starting recipe save process")
         
+        // Preserve the original ID when editing so existing notes and other
+        // references remain valid. When creating a new recipe, generate a new
+        // identifier automatically via the default initializer.
         let recipe = Recipe(
+            id: existingRecipe?.id ?? UUID(),
             name: recipeName,
             category: category,
             description: description,
             ingredients: ingredients.filter { !$0.isEmpty },
             preparations: preparations.filter { !$0.isEmpty },
-            creator: isImporting ? existingRecipe?.creator ?? "Unknown" : settingsManager.username ?? "Unknown"
+            isBuiltIn: existingRecipe?.isBuiltIn ?? false,
+            creator: isImporting ? existingRecipe?.creator ?? "Unknown" : settingsManager.username ?? "Unknown",
+            isFeatured: existingRecipe?.isFeatured ?? false
         )
         print("📝 Created recipe object: \(recipe.name)")
         
@@ -235,12 +241,14 @@ struct RecipeEditorView: View {
                 let fileURL = recipesDirectory.appendingPathComponent(filename)
                 print("💾 Saving recipe to: \(fileURL.path)")
                 
-                // If we're editing and the name changed, delete the old file
-                if let oldRecipe = existingRecipe,
-                   oldRecipe.name != recipe.name {
-                    let oldFilename = oldRecipe.name.lowercased().replacingOccurrences(of: " ", with: "_")
-                    let oldFileURL = recipesDirectory.appendingPathComponent("\(oldFilename).json")
-                    if FileManager.default.fileExists(atPath: oldFileURL.path) {
+                // If we're editing, remove the old file (especially if the name
+                // has changed) before saving the updated version. The filename
+                // includes a UUID suffix, so use the helper to generate the
+                // correct path.
+                if let oldRecipe = existingRecipe {
+                    let oldFilename = generateFilename(for: oldRecipe)
+                    let oldFileURL = recipesDirectory.appendingPathComponent(oldFilename)
+                    if oldFileURL != fileURL && FileManager.default.fileExists(atPath: oldFileURL.path) {
                         try FileManager.default.removeItem(at: oldFileURL)
                         print("🗑️ Deleted old recipe file: \(oldFileURL.path)")
                     }
