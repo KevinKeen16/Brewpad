@@ -2,7 +2,7 @@
     "id": "2c5b9b3f-4e6d-5f7a-8a9c-1d2e3f4a5678",
     "name": "Earl Grey Tea",
     "category": "Tea",
-    "isFeatured": true,
+    "isFeatured": false,
     "description": "A classic black tea flavored with oil of bergamot, offering a distinctive citrus aroma and taste. Perfect for morning or afternoon tea time.",
     "ingredients": [
         "1 Earl Grey tea bag or 2g loose leaf tea",
