@@ -16,11 +16,12 @@ struct ConfettiView: UIViewRepresentable {
         let rectangle = Self.makeRectangleImage(size: CGSize(width: 8, height: 4))?.cgImage
         emitter.emitterCells = colors.map { color in
             let cell = CAEmitterCell()
-            cell.birthRate = 2
-            cell.lifetime = 4.0
-            cell.velocity = 200
-            cell.velocityRange = 50
+            cell.birthRate = 8
+            cell.lifetime = 5.0
+            cell.velocity = 600
+            cell.velocityRange = 200
             cell.emissionLongitude = .pi
+            cell.yAcceleration = -150
             cell.spin = 4
             cell.spinRange = 8
             cell.scale = 0.5
