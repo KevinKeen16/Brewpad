@@ -40,6 +40,19 @@ struct RecipeDebugView: View {
                         .padding(.vertical, 4)
                     }
                 }
+
+                // Server Response Section
+                Section("Server Response") {
+                    if let response = recipeStore.serverResponse {
+                        Text(response)
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    } else {
+                        Text("No response yet")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                }
             }
             .navigationTitle("Recipe Debug Info")
             .navigationBarTitleDisplayMode(.inline)
@@ -49,6 +62,9 @@ struct RecipeDebugView: View {
                         dismiss()
                     }
                 }
+            }
+            .onAppear {
+                recipeStore.checkServerConnection()
             }
         }
     }
