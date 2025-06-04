@@ -196,11 +196,11 @@ struct SettingsView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("App Tutorial")
                                 .font(.headline)
-                            
+
                             Button(action: { showingTutorialConfirmation = true }) {
                                 HStack {
                                     Image(systemName: "book.circle.fill")
-                                    Text("Replay Tutorial")
+                                    Text("Show Tutorial")
                                 }
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
@@ -208,7 +208,7 @@ struct SettingsView: View {
                                 .background(settingsManager.colors.buttonBackground)
                                 .cornerRadius(10)
                             }
-                            
+
                             Text("View the feature introduction cards again")
                                 .font(.caption)
                                 .foregroundColor(settingsManager.colors.textSecondary)
@@ -377,19 +377,17 @@ struct SettingsView: View {
         } message: {
             Text("New recipes have been added to your collection.")
         }
-        .alert("Replay Tutorial", isPresented: $showingTutorialConfirmation) {
+        .alert("Show Tutorial", isPresented: $showingTutorialConfirmation) {
             Button("Cancel", role: .cancel) { }
-            Button("Replay") {
+            Button("Show") {
                 withAnimation {
-                    // Reset all onboarding-related settings
+                    // Display tutorial cards without resetting user data
                     settingsManager.hasCompletedOnboarding = false
-                    settingsManager.username = nil
-                    settingsManager.birthdate = nil
-                    settingsManager.isReplayingTutorial = false // Ensure full onboarding
+                    settingsManager.isReplayingTutorial = true
                 }
             }
         } message: {
-            Text("This will restart the complete onboarding process, including username and age verification. Would you like to continue?")
+            Text("Would you like to view the tutorial cards again? Your username and age will stay the same.")
         }
         .sheet(isPresented: $showingDebugMenu) {
             RecipeDebugView()
