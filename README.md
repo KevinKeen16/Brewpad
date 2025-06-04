@@ -36,6 +36,9 @@ The app is built with **offline-first principles**, with optional support for se
   - **Smart sections** like “Trending Coffee”, “Quick & Easy”, or “Chocolate Comforts”
   - A fun **“Surprise Me” button** to randomly select a recipe from your collection
 
+### 📁 Files App Integration
+- Access saved recipes directly via the iOS Files app.
+
 ### 📖 Recipe Details
 Each recipe contains:
 - Title and category

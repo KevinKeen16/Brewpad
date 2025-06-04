@@ -29,7 +29,7 @@
                 <string>com.mirreraven.brewpad.recipe</string>
             </array>
             <key>LSSupportsOpeningDocumentsInPlace</key>
-            <false/>
+            <true/>
             <key>LSHandlerContentTag</key>
             <string>brewpadrecipe</string>
         </dict>
@@ -96,7 +96,9 @@
         </dict>
     </array>
     <key>LSSupportsOpeningDocumentsInPlace</key>
-    <false/>
+    <true/>
+    <key>UIFileSharingEnabled</key>
+    <true/>
     <key>CFBundleAllowMixedLocalizations</key>
     <true/>
     <key>CFBundleDevelopmentRegion</key>
