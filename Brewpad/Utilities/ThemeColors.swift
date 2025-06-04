@@ -34,6 +34,17 @@ struct ThemeColors {
         divider: Color(hex: "#3C2A1E"),
         highlight: Color(hex: "#C7A98C")
     )
+
+    static let brewpadLight = ThemeColors(
+        background: Color(hex: "#F9F3EE"),
+        accent: Color(hex: "#6E3B1E"),
+        textPrimary: Color(hex: "#3E2A1B"),
+        textSecondary: Color(hex: "#8B6A53"),
+        buttonBackground: Color(hex: "#D9B49C"),
+        buttonText: Color(hex: "#3E2A1B"),
+        divider: Color(hex: "#E4D6CC"),
+        highlight: Color(hex: "#A67C5B")
+    )
 }
 
 extension Color {
