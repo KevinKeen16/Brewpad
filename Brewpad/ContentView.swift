@@ -11,7 +11,8 @@ struct ContentView: View {
     @EnvironmentObject private var settingsManager: SettingsManager
     @EnvironmentObject private var recipeStore: RecipeStore
     @EnvironmentObject private var appState: AppState
-    @State private var selectedTab = 0
+    // Start the app on the Recipes tab instead of Featured
+    @State private var selectedTab = 1
     
     var body: some View {
         Group {
