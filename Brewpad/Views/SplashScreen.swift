@@ -55,9 +55,6 @@ struct SplashScreen: View {
                     .rotationEffect(.degrees(rotationAngle))
                     .onAppear {
                         startShakeAnimation()
-                        if isBirthday {
-                            showConfetti = true
-                        }
                     }
 
                 Text("Brewpad")
@@ -75,6 +72,9 @@ struct SplashScreen: View {
                         quipOpacity = 1
                         if action == nil {
                             currentQuip = TimeGreeting.getQuip(username: settingsManager.username, settingsManager: settingsManager)
+                        }
+                        if isBirthday {
+                            showConfetti = true
                         }
                     }
             }

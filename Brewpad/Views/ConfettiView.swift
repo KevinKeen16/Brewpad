@@ -17,11 +17,11 @@ struct ConfettiView: UIViewRepresentable {
         emitter.emitterCells = colors.map { color in
             let cell = CAEmitterCell()
             cell.birthRate = 8
-            cell.lifetime = 5.0
-            cell.velocity = 600
-            cell.velocityRange = 200
-            cell.emissionLongitude = .pi
-            cell.yAcceleration = -150
+            cell.lifetime = 6.0
+            cell.velocity = 200
+            cell.velocityRange = 100
+            cell.emissionLongitude = .pi / 2
+            cell.yAcceleration = 300
             cell.spin = 4
             cell.spinRange = 8
             cell.scale = 0.5
