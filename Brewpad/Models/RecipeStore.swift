@@ -138,7 +138,9 @@ class RecipeStore: ObservableObject {
             return
         }
 
-        let recipeName = fileName.hasSuffix(".brewpadrecipe") ? fileName : "\(fileName).brewpadrecipe"
+        let recipeName = fileName.lowercased().hasSuffix(".brewpadrecipe")
+            ? fileName
+            : "\(fileName).brewpadrecipe"
         guard let downloadURL = URL(string: "\(serverBaseURL)\(recipeName)") else {
             print("❌ Invalid download URL for \(fileName)")
             completion()
@@ -254,7 +256,8 @@ class RecipeStore: ObservableObject {
             at: recipesDirectory,
             includingPropertiesForKeys: nil
         ).filter({
-            $0.pathExtension == "json" || $0.pathExtension == "brewpadrecipe"
+            let ext = $0.pathExtension.lowercased()
+            return ext == "json" || ext == "brewpadrecipe"
         }) else {
             return
         }

@@ -59,7 +59,7 @@ struct Recipe: Identifiable, Codable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(UUID.self, forKey: .id)
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
         name = try container.decode(String.self, forKey: .name)
         category = try container.decode(Category.self, forKey: .category)
         description = try container.decode(String.self, forKey: .description)
