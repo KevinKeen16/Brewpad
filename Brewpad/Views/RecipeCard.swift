@@ -58,12 +58,14 @@ struct RecipeCard: View {
                 .cornerRadius(10)
                 .transition(
                     .asymmetric(
-                        insertion: .move(edge: .top)
-                            .combined(with: .opacity)
-                            .animation(.spring(response: 0.35, dampingFraction: 0.7)),
-                        removal: .move(edge: .top)
-                            .combined(with: .opacity)
-                            .animation(.spring(response: 0.3, dampingFraction: 0.8))
+                        insertion:
+                            .opacity
+                            .combined(with: .scale(scale: 0.9, anchor: .top))
+                            .animation(.spring(response: 0.4, dampingFraction: 0.8)),
+                        removal:
+                            .opacity
+                            .combined(with: .scale(scale: 0.9, anchor: .top))
+                            .animation(.spring(response: 0.35, dampingFraction: 1.0))
                     )
                 )
             }
