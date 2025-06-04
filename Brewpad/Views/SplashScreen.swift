@@ -5,6 +5,13 @@ struct SplashScreen: View {
     @State private var rotationAngle: Double = 0
     @State private var quipOpacity: Double = 0
     @State private var currentQuip: String = ""
+    private var isBirthday: Bool {
+        guard let birthday = settingsManager.birthdate else { return false }
+        let calendar = Calendar.current
+        let today = calendar.dateComponents([.month, .day], from: Date())
+        let components = calendar.dateComponents([.month, .day], from: birthday)
+        return today.month == components.month && today.day == components.day
+    }
     let action: AppState.AppAction?
     
     init(action: AppState.AppAction? = nil) {
@@ -39,32 +46,39 @@ struct SplashScreen: View {
     }
     
     var body: some View {
-        VStack(spacing: 30) {
-            Image(systemName: "mug.fill")
-                .font(.system(size: 80))
-                .foregroundColor(cupColor)
-                .rotationEffect(.degrees(rotationAngle))
-                .onAppear {
-                    startShakeAnimation()
-                }
-            
-            Text("Brewpad")
-                .font(.largeTitle)
-                .bold()
-            
-            // Quip Text
-            Text(action?.quip ?? currentQuip)
-                .font(.subheadline)
-                .foregroundColor(.gray)
-                .multilineTextAlignment(.center)
-                .opacity(quipOpacity)
-                .animation(.easeIn(duration: 0.5).delay(0.5), value: quipOpacity)
-                .onAppear {
-                    quipOpacity = 1
-                    if action == nil {
-                        currentQuip = TimeGreeting.getQuip(username: settingsManager.username, settingsManager: settingsManager)
+        ZStack {
+            VStack(spacing: 30) {
+                Image(systemName: "mug.fill")
+                    .font(.system(size: 80))
+                    .foregroundColor(cupColor)
+                    .rotationEffect(.degrees(rotationAngle))
+                    .onAppear {
+                        startShakeAnimation()
                     }
-                }
+
+                Text("Brewpad")
+                    .font(.largeTitle)
+                    .bold()
+
+                // Quip Text
+                Text(action?.quip ?? currentQuip)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.center)
+                    .opacity(quipOpacity)
+                    .animation(.easeIn(duration: 0.5).delay(0.5), value: quipOpacity)
+                    .onAppear {
+                        quipOpacity = 1
+                        if action == nil {
+                            currentQuip = TimeGreeting.getQuip(username: settingsManager.username, settingsManager: settingsManager)
+                        }
+                    }
+            }
+
+            if isBirthday {
+                ConfettiView()
+                    .ignoresSafeArea()
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(uiColor: .systemBackground))

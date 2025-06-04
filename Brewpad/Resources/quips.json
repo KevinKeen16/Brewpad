@@ -139,6 +139,13 @@
             "Easter celebration sips with {name} 🥚",
             "Hoppy brewing with {name} 🌷",
             "Easter Sunday perfection by {name} 🐣"
+        ],
+        "birthday": [
+            "Happy Birthday, {name}! 🎉",
+            "Celebrating {name}'s special day with a perfect brew 🎂",
+            "Birthday cheers and coffee for {name}! ☕️",
+            "Another year, another great cup for {name} 🎈",
+            "Warm wishes and hot coffee for {name}'s birthday 🎁"
         ]
     }
-} 
+}
