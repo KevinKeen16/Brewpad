@@ -345,11 +345,13 @@ struct RecipeListView: View {
                     }
                 }
                 .contextMenu {
-                    Button(role: .destructive) {
-                        recipeToDelete = recipe
-                        showingDeleteConfirmation = true
-                    } label: {
-                        Label("Delete Recipe", systemImage: "trash")
+                    if !recipe.isBuiltIn && recipe.creator != "Brewpad" {
+                        Button(role: .destructive) {
+                            recipeToDelete = recipe
+                            showingDeleteConfirmation = true
+                        } label: {
+                            Label("Delete Recipe", systemImage: "trash")
+                        }
                     }
                 }
             }

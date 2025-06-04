@@ -70,6 +70,11 @@ struct ContentView: View {
         }
         .animation(.easeInOut(duration: 0.3), value: recipeStore.isInitialized)
         .animation(.easeInOut(duration: 0.3), value: settingsManager.hasCompletedOnboarding)
+        .alert("Server Not Reachable", isPresented: $recipeStore.showServerError) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("Unable to reach the Brewpad recipe server.")
+        }
     }
 }
 
