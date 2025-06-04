@@ -80,18 +80,19 @@ struct SplashScreen: View {
     // Helper function to calculate Thanksgiving (4th Thursday of November)
     private func getThanksgivingDay() -> Int {
         let calendar = Calendar.current
-        let november = calendar.date(from: DateComponents(year: calendar.component(.year, from: Date()), month: 11))!
-        var thursdays = 0
-        var day = 1
-        
-        while thursdays < 4 {
-            let date = calendar.date(from: DateComponents(year: calendar.component(.year, from: november), month: 11, day: day))!
-            if calendar.component(.weekday, from: date) == 5 { // Thursday
-                thursdays += 1
-            }
-            day += 1
+        let year = calendar.component(.year, from: Date())
+
+        let startOfNovember = calendar.date(from: DateComponents(year: year, month: 11, day: 1))!
+        let components = DateComponents(month: 11, weekday: 5, weekdayOrdinal: 4)
+
+        guard let thanksgiving = calendar.nextDate(after: startOfNovember,
+                                                   matching: components,
+                                                   matchingPolicy: .nextTime,
+                                                   direction: .forward) else {
+            return 0
         }
-        return day - 1
+
+        return calendar.component(.day, from: thanksgiving)
     }
     
     // Helper function to check if current date is Easter
