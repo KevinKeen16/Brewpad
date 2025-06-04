@@ -22,6 +22,7 @@ struct TimeGreeting {
         let halloween: [String]
         let thanksgiving: [String]
         let easter: [String]
+        let birthday: [String]
     }
     
     private static var quips: QuipsData? = {
@@ -72,7 +73,18 @@ struct TimeGreeting {
             
             return quip.replacingOccurrences(of: "{name}", with: name)
         }
-        
+
+        // Birthday check
+        if let birthday = settingsManager.birthdate {
+            let calendar = Calendar.current
+            let today = calendar.dateComponents([.month, .day], from: Date())
+            let birthComponents = calendar.dateComponents([.month, .day], from: birthday)
+            if today.month == birthComponents.month && today.day == birthComponents.day,
+               let quip = quips?.seasonal.birthday.randomElement() {
+                return quip.replacingOccurrences(of: "{name}", with: name)
+            }
+        }
+
         return checkActualSeasonalQuip(name: name)
     }
     

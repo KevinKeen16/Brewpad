@@ -24,4 +24,12 @@ struct TimeGreetingTests {
         let quip = TimeGreeting.getQuip(username: "Alice", settingsManager: settings)
         #expect(!quip.isEmpty)
     }
+
+    @Test
+    func testBirthdayQuip() async throws {
+        let settings = SettingsManager()
+        settings.birthdate = Date()
+        let quip = TimeGreeting.getQuip(username: "Alice", settingsManager: settings)
+        #expect(quip.contains("Alice"))
+    }
 }
