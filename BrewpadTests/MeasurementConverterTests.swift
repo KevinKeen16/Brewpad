@@ -1,0 +1,28 @@
+import Testing
+@testable import Brewpad
+
+struct MeasurementConverterTests {
+    @Test
+    func testGramsToOunces() async throws {
+        let result = MeasurementConverter.convert("20g", toImperial: true)
+        #expect(result.contains("0.7 oz"))
+    }
+
+    @Test
+    func testMillilitersToFluidOunces() async throws {
+        let result = MeasurementConverter.convert("120ml", toImperial: true)
+        #expect(result.contains("4.1 fl oz"))
+    }
+
+    @Test
+    func testCelsiusToFahrenheit() async throws {
+        let result = MeasurementConverter.convert("93°C", toImperial: true)
+        #expect(result.contains("199°F"))
+    }
+
+    @Test
+    func testCentimetersToInches() async throws {
+        let result = MeasurementConverter.convert("20cm", toImperial: true)
+        #expect(result.contains("7.9 inches"))
+    }
+}
