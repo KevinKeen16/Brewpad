@@ -306,6 +306,18 @@ struct SettingsView: View {
                                         .foregroundColor(.gray)
                                 }
 
+                                if !recipeStore.serverFetchedRecipes.isEmpty {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("Fetched Recipes:")
+                                            .font(.subheadline)
+                                        ForEach(recipeStore.serverFetchedRecipes, id: \.self) { recipe in
+                                            Text(recipe)
+                                                .font(.caption2)
+                                                .foregroundColor(.gray)
+                                        }
+                                    }
+                                }
+
                                 Button(action: { recipeStore.checkServerConnection() }) {
                                     HStack {
                                         Image(systemName: "arrow.clockwise.circle.fill")

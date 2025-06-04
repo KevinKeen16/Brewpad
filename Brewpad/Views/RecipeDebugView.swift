@@ -52,6 +52,18 @@ struct RecipeDebugView: View {
                             .font(.caption)
                             .foregroundColor(.gray)
                     }
+
+                    if !recipeStore.serverFetchedRecipes.isEmpty {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Fetched Recipes:")
+                                .font(.subheadline)
+                            ForEach(recipeStore.serverFetchedRecipes, id: \.self) { recipe in
+                                Text(recipe)
+                                    .font(.caption2)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                    }
                 }
             }
             .navigationTitle("Recipe Debug Info")
