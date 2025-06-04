@@ -141,20 +141,23 @@ struct UserSetupView: View {
                             .foregroundColor(.gray)
                     }
                     
-                    // Age Verification
+                    // Birth Date
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Age Verification")
+                        Text("Birthday")
                             .font(.headline)
-                        
-                        Toggle(isOn: $settingsManager.isOver18) {
-                            HStack {
-                                Image(systemName: "person.crop.circle.badge.checkmark")
-                                    .foregroundColor(.blue)
-                                Text("I am 18 or older")
-                            }
-                        }
-                        .toggleStyle(SwitchToggleStyle(tint: .blue))
-                        
+
+                        DatePicker(
+                            "Select your birth date",
+                            selection: Binding<Date>(
+                                get: {
+                                    settingsManager.birthdate ?? Calendar.current.date(byAdding: .year, value: -18, to: Date())!
+                                },
+                                set: { settingsManager.birthdate = $0 }
+                            ),
+                            displayedComponents: .date
+                        )
+                        .datePickerStyle(.compact)
+
                         Text("Required for accessing alcoholic beverage recipes. You can change this later in settings.")
                             .font(.caption)
                             .foregroundColor(.gray)
