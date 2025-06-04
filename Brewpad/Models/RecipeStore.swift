@@ -29,7 +29,7 @@ class RecipeStore: ObservableObject {
 
         // Start loading immediately
         loadRecipes()
-        fetchServerRecipes()
+        updateFromServer()
         checkServerConnection()
 
         // Ensure minimum splash screen duration
@@ -67,11 +67,20 @@ class RecipeStore: ObservableObject {
         }.resume()
     }
 
+    /// Public method to manually refresh recipes from the Brewpad server.
+    /// - Parameter completion: Called once the refresh operation has finished.
+    func updateFromServer(completion: (() -> Void)? = nil) {
+        fetchServerRecipes(completion: completion)
+    }
+
     /// Fetches the list of recipes from the Brewpad remote server and downloads
     /// all files found in the index. After downloading, the local recipe list
     /// will be reloaded.
-    private func fetchServerRecipes() {
-        guard let listingURL = URL(string: serverBaseURL) else { return }
+    private func fetchServerRecipes(completion: (() -> Void)? = nil) {
+        guard let listingURL = URL(string: serverBaseURL) else {
+            completion?()
+            return
+        }
 
         print("🔎 Fetching server recipe list from \(listingURL.absoluteString)")
 
@@ -83,6 +92,7 @@ class RecipeStore: ObservableObject {
                     self.hasFetchedServerRecipes = true
                     self.checkInitialization()
                 }
+                completion?()
                 return
             }
 
@@ -108,6 +118,7 @@ class RecipeStore: ObservableObject {
                 DispatchQueue.main.async {
                     self.hasFetchedServerRecipes = true
                     self.loadRecipes()
+                    completion?()
                 }
             }
         }.resume()

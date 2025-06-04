@@ -100,10 +100,6 @@ struct RecipeCard: View {
                             .scaleEffect(favoriteScale)
                     }
                 }
-                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                    .foregroundColor(settingsManager.colors.accent)
-                    .rotationEffect(.degrees(isExpanded ? 0 : 180))
-                    .animation(.spring(response: 0.2), value: isExpanded)
             }
             .padding()
             .frame(maxWidth: .infinity)
