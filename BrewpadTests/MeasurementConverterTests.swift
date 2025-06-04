@@ -31,4 +31,11 @@ struct MeasurementConverterTests {
         let result = MeasurementConverter.convert("Add 20g sugar and 20g flour", toImperial: true)
         #expect(result.contains("Add 0.7 oz sugar and 0.7 oz flour"))
     }
+
+    @Test
+    func testMixedUnitsInSentence() async throws {
+        let result = MeasurementConverter.convert("Heat 200ml water to 93°C", toImperial: true)
+        #expect(result.contains("6.8 fl oz"))
+        #expect(result.contains("199°F"))
+    }
 }
