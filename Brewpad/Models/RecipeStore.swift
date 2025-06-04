@@ -61,10 +61,12 @@ class RecipeStore: ObservableObject {
     private func fetchServerRecipes() {
         guard let listingURL = URL(string: serverBaseURL) else { return }
 
+        print("🔎 Fetching server recipe list from \(listingURL.absoluteString)")
+
         URLSession.shared.dataTask(with: listingURL) { data, response, error in
             guard let data = data, error == nil,
                   let content = String(data: data, encoding: .utf8) else {
-                print("❌ Failed to fetch recipe listing: \(error?.localizedDescription ?? "Unknown error")")
+                print("❌ Failed to fetch recipe listing: \(error?.localizedDescription ?? \"Unknown error\")")
                 DispatchQueue.main.async {
                     self.hasFetchedServerRecipes = true
                     self.checkInitialization()
@@ -72,13 +74,19 @@ class RecipeStore: ObservableObject {
                 return
             }
 
+            print("📄 Recipe listing fetched")
+
             let fileNames = self.extractRecipeFileNames(from: content)
+
+            print("📜 Found \(fileNames.count) recipes: \(fileNames)")
 
             DispatchQueue.main.async {
                 self.serverFetchedRecipes = fileNames
             }
 
+            print("⬇️ Beginning download of server recipes")
             self.downloadRecipesSequentially(fileNames) {
+                print("✅ Finished downloading server recipes")
                 DispatchQueue.main.async {
                     self.hasFetchedServerRecipes = true
                     self.loadRecipes()
@@ -92,11 +100,16 @@ class RecipeStore: ObservableObject {
     /// are complete the provided completion handler will be called.
     private func downloadRecipesSequentially(_ names: [String], index: Int = 0, completion: @escaping () -> Void) {
         guard index < names.count else {
+            print("🏁 Completed sequential downloads")
             completion()
             return
         }
 
-        downloadRecipe(named: names[index]) { [weak self] in
+        let currentName = names[index]
+        print("⬇️ Downloading recipe \(currentName) (\(index + 1)/\(names.count))")
+
+        downloadRecipe(named: currentName) { [weak self] in
+            print("✅ Finished download of \(currentName)")
             self?.downloadRecipesSequentially(names, index: index + 1, completion: completion)
         }
     }
@@ -120,12 +133,14 @@ class RecipeStore: ObservableObject {
     /// the provided name with the `.brewpadrecipe` extension.
     private func downloadRecipe(named fileName: String, completion: @escaping () -> Void) {
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("❌ Could not locate documents directory for \(fileName)")
             completion()
             return
         }
 
         let recipeName = fileName.hasSuffix(".brewpadrecipe") ? fileName : "\(fileName).brewpadrecipe"
         guard let downloadURL = URL(string: "\(serverBaseURL)\(recipeName)") else {
+            print("❌ Invalid download URL for \(fileName)")
             completion()
             return
         }
@@ -138,12 +153,16 @@ class RecipeStore: ObservableObject {
 
         let destinationURL = recipesDirectory.appendingPathComponent(recipeName)
 
+        print("🌐 Fetching \(recipeName) from \(downloadURL.absoluteString)")
+
         URLSession.shared.dataTask(with: downloadURL) { data, _, error in
             guard let data = data, error == nil else {
-                print("❌ Failed to download recipe \(fileName): \(error?.localizedDescription ?? "Unknown error")")
+                print("❌ Failed to download recipe \(fileName): \(error?.localizedDescription ?? \"Unknown error\")")
                 completion()
                 return
             }
+
+            print("📥 Downloaded data for \(fileName)")
 
             var recipeData = data
             if var recipe = try? JSONDecoder().decode(Recipe.self, from: data),
@@ -164,7 +183,9 @@ class RecipeStore: ObservableObject {
             }
 
             do {
+                print("💾 Saving \(recipeName) to \(destinationURL.path)")
                 try recipeData.write(to: destinationURL)
+                print("✅ Saved \(recipeName)")
                 completion()
             } catch {
                 print("❌ Failed to save recipe \(fileName): \(error.localizedDescription)")
