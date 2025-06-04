@@ -10,7 +10,7 @@ struct WelcomeScreen: View {
             // Welcome Icon
             Image(systemName: "mug.fill")
                 .font(.system(size: 60))
-                .foregroundColor(.blue)
+                .foregroundColor(settingsManager.colors.accent)
             
             // Welcome Text
             Text("Welcome to Brewpad")
@@ -125,7 +125,7 @@ struct FeatureRow: View {
     var body: some View {
         HStack {
             Image(systemName: icon)
-                .foregroundColor(.blue)
+                .foregroundColor(settingsManager.colors.accent)
             Text(text)
         }
     }

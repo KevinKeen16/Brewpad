@@ -36,7 +36,7 @@ struct OnboardingView: View {
     
     var body: some View {
         ZStack {
-            Color(uiColor: .systemBackground)
+            settingsManager.colors.background
                 .ignoresSafeArea()
             
             if settingsManager.isReplayingTutorial {
@@ -108,7 +108,7 @@ struct UserSetupView: View {
         VStack(spacing: 30) {
             Image(systemName: "mug.fill")
                 .font(.system(size: 60))
-                .foregroundColor(.blue)
+                .foregroundColor(settingsManager.colors.accent)
             
             Text("Welcome to Brewpad")
                 .font(.title)
@@ -117,11 +117,11 @@ struct UserSetupView: View {
             VStack(spacing: 20) {
                 Text("Your Personal Beverage Guide")
                     .font(.headline)
-                    .foregroundColor(.blue)
+                    .foregroundColor(settingsManager.colors.accent)
                 
                 Text("Join our community of beverage enthusiasts and start your journey to creating perfect drinks.")
                     .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(settingsManager.colors.textSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
                 
@@ -138,7 +138,7 @@ struct UserSetupView: View {
                         
                         Text("Your name will be used to personalize your experience")
                             .font(.caption)
-                            .foregroundColor(.gray)
+                            .foregroundColor(settingsManager.colors.textSecondary)
                     }
                     
                     // Birth Date
@@ -160,7 +160,7 @@ struct UserSetupView: View {
 
                         Text("Required for accessing alcoholic beverage recipes. You can change this later in settings.")
                             .font(.caption)
-                            .foregroundColor(.gray)
+                            .foregroundColor(settingsManager.colors.textSecondary)
                     }
                 }
             }
@@ -182,7 +182,7 @@ struct TutorialCardView: View {
         VStack(spacing: 30) {
             Image(systemName: card.icon)
                 .font(.system(size: 50))
-                .foregroundColor(.blue)
+                .foregroundColor(settingsManager.colors.accent)
             
             VStack(spacing: 10) {
                 Text(card.title)
@@ -191,7 +191,7 @@ struct TutorialCardView: View {
                 
                 Text(card.description)
                     .font(.body)
-                    .foregroundColor(.gray)
+                    .foregroundColor(settingsManager.colors.textSecondary)
                     .multilineTextAlignment(.center)
             }
         }

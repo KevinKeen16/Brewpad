@@ -33,6 +33,7 @@ struct ShareSheet: UIViewControllerRepresentable {
 struct RecipeManagerView: View {
     @EnvironmentObject private var recipeStore: RecipeStore
     @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var settingsManager: SettingsManager
     @State private var selectedAction: RecipeAction?
     @State private var recipeToEdit: Recipe?
     @State private var recipeToExport: Recipe?
@@ -65,7 +66,7 @@ struct RecipeManagerView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(settingsManager.colors.buttonBackground)
                     .cornerRadius(10)
                 }
                 
@@ -80,7 +81,7 @@ struct RecipeManagerView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(settingsManager.colors.buttonBackground)
                     .cornerRadius(10)
                 }
                 
@@ -95,7 +96,7 @@ struct RecipeManagerView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(settingsManager.colors.buttonBackground)
                     .cornerRadius(10)
                 }
                 
@@ -110,7 +111,7 @@ struct RecipeManagerView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(settingsManager.colors.buttonBackground)
                     .cornerRadius(10)
                 }
                 
@@ -120,28 +121,28 @@ struct RecipeManagerView: View {
                 VStack(spacing: 12) {
                     Text("Recipe Management")
                         .font(.headline)
-                        .foregroundColor(.gray)
+                        .foregroundColor(settingsManager.colors.textSecondary)
                     
                     Text("Create, edit, import, and export your custom recipes. Imported recipes will be added to your personal collection.")
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundColor(settingsManager.colors.textSecondary)
                         .multilineTextAlignment(.center)
                     
                     Text("Important Information")
                         .font(.subheadline)
-                        .foregroundColor(.gray)
+                        .foregroundColor(settingsManager.colors.textSecondary)
                         .padding(.top, 4)
                     
                     Text("• Importing recipes is done at your own risk. Only import files from trusted sources.\n\n• Editing recipe files outside the app is not supported and may cause errors.\n\n• Sharing recipes with others is your responsibility. Be mindful of what you share.")
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundColor(settingsManager.colors.textSecondary)
                         .multilineTextAlignment(.leading)
                 }
                 .padding(.horizontal)
                 .frame(maxWidth: .infinity)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.gray.opacity(0.05))
+                        .fill(settingsManager.colors.divider.opacity(0.2))
                         .padding(.horizontal)
                 )
             }
@@ -301,6 +302,7 @@ struct ActionButton: View {
     let title: String
     let icon: String
     let action: () -> Void
+    @EnvironmentObject private var settingsManager: SettingsManager
     
     var body: some View {
         Button(action: action) {
@@ -309,13 +311,13 @@ struct ActionButton: View {
                 Text(title)
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .foregroundColor(.gray)
+                    .foregroundColor(settingsManager.colors.textSecondary)
             }
-            .foregroundColor(.blue)
+            .foregroundColor(settingsManager.colors.buttonText)
             .padding()
-            .background(Color.white)
+            .background(settingsManager.colors.buttonBackground)
             .cornerRadius(10)
-            .shadow(color: .gray.opacity(0.1), radius: 2, x: 0, y: 1)
+            .shadow(color: settingsManager.colors.divider.opacity(0.1), radius: 2, x: 0, y: 1)
         }
     }
 }
@@ -341,7 +343,7 @@ struct RecipeListView: View {
                             .font(.headline)
                         Text(recipe.category.rawValue)
                             .font(.subheadline)
-                            .foregroundColor(.gray)
+                            .foregroundColor(settingsManager.colors.textSecondary)
                     }
                 }
                 .contextMenu {

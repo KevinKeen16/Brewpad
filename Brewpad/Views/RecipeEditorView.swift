@@ -38,7 +38,7 @@ struct RecipeEditorView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Basic Information")
                             .font(.headline)
-                            .foregroundColor(.blue)
+                            .foregroundColor(settingsManager.colors.accent)
                         
                         TextField("Recipe Name", text: $recipeName)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -56,18 +56,18 @@ struct RecipeEditorView: View {
                     }
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.gray.opacity(0.05)))
+                        .fill(settingsManager.colors.divider.opacity(0.2)))
                     
                     // Ingredients Section
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Text("Ingredients")
                                 .font(.headline)
-                                .foregroundColor(.blue)
+                                .foregroundColor(settingsManager.colors.accent)
                             Spacer()
                             Button(action: { ingredients.append("") }) {
                                 Image(systemName: "plus.circle.fill")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(settingsManager.colors.accent)
                             }
                         }
                         
@@ -87,25 +87,25 @@ struct RecipeEditorView: View {
                     }
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.gray.opacity(0.05)))
+                        .fill(settingsManager.colors.divider.opacity(0.2)))
                     
                     // Preparation Steps Section
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Text("Preparation Steps")
                                 .font(.headline)
-                                .foregroundColor(.blue)
+                                .foregroundColor(settingsManager.colors.accent)
                             Spacer()
                             Button(action: { preparations.append("") }) {
                                 Image(systemName: "plus.circle.fill")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(settingsManager.colors.accent)
                             }
                         }
                         
                         ForEach(preparations.indices, id: \.self) { index in
                             HStack {
                                 Text("\(index + 1).")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(settingsManager.colors.accent)
                                     .frame(width: 25, alignment: .leading)
                                 
                                 TextField("Step \(index + 1)", text: $preparations[index], axis: .vertical)
@@ -123,7 +123,7 @@ struct RecipeEditorView: View {
                     }
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.gray.opacity(0.05)))
+                        .fill(settingsManager.colors.divider.opacity(0.2)))
                     
                     // Save Button
                     Button(action: saveRecipe) {
@@ -134,7 +134,7 @@ struct RecipeEditorView: View {
                             .padding()
                             .background(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.blue.opacity(isFormValid ? 1 : 0.5))
+                                    .fill(settingsManager.colors.buttonBackground.opacity(isFormValid ? 1 : 0.5))
                             )
                     }
                     .disabled(!isFormValid)

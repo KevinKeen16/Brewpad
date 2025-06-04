@@ -76,14 +76,14 @@ struct SettingsView: View {
                                     isEditingUsername = true
                                 }) {
                                     Image(systemName: "pencil.circle.fill")
-                                        .foregroundColor(.blue)
+                                        .foregroundColor(settingsManager.colors.accent)
                                 }
                             }
                         }
                         
                         Text("Your display name in the app")
                             .font(.caption)
-                            .foregroundColor(.gray)
+                            .foregroundColor(settingsManager.colors.textSecondary)
                     }
                     
                     Divider()
@@ -107,12 +107,12 @@ struct SettingsView: View {
 
                         Text("Required for accessing alcoholic beverage recipes")
                             .font(.caption)
-                            .foregroundColor(.gray)
+                            .foregroundColor(settingsManager.colors.textSecondary)
                     }
                 }
                 .padding()
                 .background(RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.gray.opacity(0.05)))
+                    .fill(settingsManager.colors.divider.opacity(0.2)))
                 
                 // App Settings Section
                 VStack(spacing: 16) {
@@ -135,7 +135,7 @@ struct SettingsView: View {
                             
                             Text("Choose your preferred app appearance")
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .foregroundColor(settingsManager.colors.textSecondary)
                         }
                         
                         Divider()
@@ -148,15 +148,15 @@ struct SettingsView: View {
                             Toggle(isOn: $settingsManager.useMetricUnits) {
                                 HStack {
                                     Image(systemName: "ruler")
-                                        .foregroundColor(.blue)
+                                        .foregroundColor(settingsManager.colors.accent)
                                     Text(settingsManager.useMetricUnits ? "Metric (ml, g)" : "Imperial (oz, cups)")
                                 }
                             }
-                            .toggleStyle(SwitchToggleStyle(tint: .blue))
+                            .toggleStyle(SwitchToggleStyle(tint: settingsManager.colors.accent))
                             
                             Text("Switch between metric and imperial units for recipe measurements")
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .foregroundColor(settingsManager.colors.textSecondary)
                         }
                         
                         Divider()
@@ -180,14 +180,14 @@ struct SettingsView: View {
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(isDownloading ? Color.gray : Color.blue)
+                                .background(isDownloading ? Color.gray : settingsManager.colors.buttonBackground)
                                 .cornerRadius(10)
                             }
                             .disabled(isDownloading)
                             
                             Text("Download new recipes from our collection")
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .foregroundColor(settingsManager.colors.textSecondary)
                         }
                         
                         Divider()
@@ -205,19 +205,19 @@ struct SettingsView: View {
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(Color.blue)
+                                .background(settingsManager.colors.buttonBackground)
                                 .cornerRadius(10)
                             }
                             
                             Text("View the feature introduction cards again")
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .foregroundColor(settingsManager.colors.textSecondary)
                         }
                     }
                 }
                 .padding()
                 .background(RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.gray.opacity(0.05)))
+                    .fill(settingsManager.colors.divider.opacity(0.2)))
                 
                 // Debug Section
                 if settingsManager.isDebugModeEnabled {
@@ -241,7 +241,7 @@ struct SettingsView: View {
                                 
                                 Text("Override the current date for testing holiday messages")
                                     .font(.caption)
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(settingsManager.colors.textSecondary)
                             }
                             
                             Divider()
@@ -267,13 +267,13 @@ struct SettingsView: View {
                                     .foregroundColor(.white)
                                     .frame(maxWidth: .infinity)
                                     .padding()
-                                    .background(Color.blue)
+                                    .background(settingsManager.colors.buttonBackground)
                                     .cornerRadius(10)
                                 }
                                 
                                 Text("Restart the complete onboarding process, including username and age verification")
                                     .font(.caption)
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(settingsManager.colors.textSecondary)
                             }
                             
                             VStack(alignment: .leading, spacing: 8) {
@@ -285,13 +285,13 @@ struct SettingsView: View {
                                         Text("Recipe Debug Info")
                                         Spacer()
                                         Image(systemName: "chevron.right")
-                                            .foregroundColor(.gray)
+                                            .foregroundColor(settingsManager.colors.textSecondary)
                                     }
                                 }
 
                                 Text("View detailed recipe information")
                                     .font(.caption)
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(settingsManager.colors.textSecondary)
                             }
 
                             // Server Response
@@ -302,11 +302,11 @@ struct SettingsView: View {
                                 if let response = recipeStore.serverResponse {
                                     Text(response)
                                         .font(.caption)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(settingsManager.colors.textSecondary)
                                 } else {
                                     Text("No response yet")
                                         .font(.caption)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(settingsManager.colors.textSecondary)
                                 }
 
                                 if !recipeStore.serverFetchedRecipes.isEmpty {
@@ -316,7 +316,7 @@ struct SettingsView: View {
                                         ForEach(recipeStore.serverFetchedRecipes, id: \.self) { recipe in
                                             Text(recipe)
                                                 .font(.caption2)
-                                                .foregroundColor(.gray)
+                                                .foregroundColor(settingsManager.colors.textSecondary)
                                         }
                                     }
                                 }
@@ -329,7 +329,7 @@ struct SettingsView: View {
                                     .foregroundColor(.white)
                                     .frame(maxWidth: .infinity)
                                     .padding()
-                                    .background(Color.blue)
+                                    .background(settingsManager.colors.buttonBackground)
                                     .cornerRadius(10)
                                 }
                             }
@@ -339,19 +339,19 @@ struct SettingsView: View {
                     }
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.gray.opacity(0.05)))
+                        .fill(settingsManager.colors.divider.opacity(0.2)))
                 }
                 
                 // Copyright Notice
                 VStack(spacing: 4) {
                     Text("© \(Calendar.current.component(.year, from: Date()))")
                         .font(.footnote)
-                        .foregroundColor(.gray)
+                        .foregroundColor(settingsManager.colors.textSecondary)
                     
                     Text("MirreRaven Coding And Design")
                         .font(.footnote)
                         .bold()
-                        .foregroundColor(.gray)
+                        .foregroundColor(settingsManager.colors.textSecondary)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical)

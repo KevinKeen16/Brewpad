@@ -45,7 +45,7 @@ struct RecipesView: View {
                         .padding(.trailing)
                     }
                     .padding(.vertical, 8)
-                    .background(Color.gray.opacity(0.1))
+                    .background(settingsManager.colors.divider.opacity(0.1))
                     .transition(.move(edge: .trailing))
                 } else {
                     HStack(spacing: 0) {
@@ -76,15 +76,15 @@ struct RecipesView: View {
                         .padding(.trailing)
                     }
                     .padding(.vertical, 8)
-                    .background(Color.gray.opacity(0.1))
+                    .background(settingsManager.colors.divider.opacity(0.1))
 
                     if let description = categoryDescriptions[categories[selectedCategory]] {
                         Text(description)
                             .font(.subheadline)
-                            .foregroundColor(.gray)
+                            .foregroundColor(settingsManager.colors.textSecondary)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.gray.opacity(0.05))
+                            .background(settingsManager.colors.divider.opacity(0.2))
                             .transition(.opacity)
                             .animation(.easeInOut, value: selectedCategory)
                     }
@@ -141,6 +141,7 @@ struct CategoryTab: View {
     let isSelected: Bool
     let animation: Namespace.ID
     let action: () -> Void
+    @EnvironmentObject private var settingsManager: SettingsManager
     
     var body: some View {
         Button(action: action) {
@@ -148,7 +149,7 @@ struct CategoryTab: View {
                 .font(.subheadline)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
-                .foregroundColor(isSelected ? .blue : .primary)
+                .foregroundColor(isSelected ? settingsManager.colors.accent : .primary)
         }
     }
 }

@@ -47,14 +47,14 @@ struct RecipeCard: View {
                     HStack(spacing: 8) {
                         ForEach(0..<4) { index in
                             Circle()
-                                .fill(selectedSection == index ? Color.blue : Color.gray.opacity(0.3))
+                                .fill(selectedSection == index ? settingsManager.colors.accent : Color.gray.opacity(0.3))
                                 .frame(width: 6, height: 6)
                         }
                     }
                     .padding(.vertical, 8)
                 }
                 .frame(maxWidth: .infinity)
-                .background(Color.gray.opacity(0.05))
+                .background(settingsManager.colors.divider.opacity(0.2))
                 .cornerRadius(10)
                 .transition(
                     .asymmetric(
@@ -78,23 +78,23 @@ struct RecipeCard: View {
                         HStack {
                             Text(recipe.category.rawValue)
                                 .font(.subheadline)
-                                .foregroundColor(.gray)
+                                .foregroundColor(settingsManager.colors.textSecondary)
                             Text("•")
-                                .foregroundColor(.gray)
+                                .foregroundColor(settingsManager.colors.textSecondary)
                             Text("by \(recipe.creator)")
                                 .font(.subheadline)
-                                .foregroundColor(.gray)
+                                .foregroundColor(settingsManager.colors.textSecondary)
                         }
                     }
                     Spacer()
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .foregroundColor(.blue)
+                        .foregroundColor(settingsManager.colors.accent)
                         .rotationEffect(.degrees(isExpanded ? 0 : 180))
                         .animation(.spring(response: 0.2), value: isExpanded)
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
-                .background(Color.gray.opacity(0.1))
+                .background(settingsManager.colors.divider.opacity(0.1))
                 .cornerRadius(10)
             }
             .contextMenu {
@@ -129,7 +129,7 @@ struct RecipeCard: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Description")
                 .font(.headline)
-                .foregroundColor(.blue)
+                .foregroundColor(settingsManager.colors.accent)
             Text(recipe.description)
                 .font(.subheadline)
         }
@@ -141,11 +141,11 @@ struct RecipeCard: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Ingredients")
                 .font(.headline)
-                .foregroundColor(.blue)
+                .foregroundColor(settingsManager.colors.accent)
             ForEach(recipe.ingredients, id: \.self) { ingredient in
                 HStack(alignment: .top) {
                     Text("•")
-                        .foregroundColor(.blue)
+                        .foregroundColor(settingsManager.colors.accent)
                     Text(ingredient)
                 }
                 .font(.subheadline)
@@ -159,11 +159,11 @@ struct RecipeCard: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Preparation")
                 .font(.headline)
-                .foregroundColor(.blue)
+                .foregroundColor(settingsManager.colors.accent)
             ForEach(Array(recipe.preparations.enumerated()), id: \.element) { index, step in
                 HStack(alignment: .top) {
                     Text("\(index + 1).")
-                        .foregroundColor(.blue)
+                        .foregroundColor(settingsManager.colors.accent)
                         .frame(width: 25, alignment: .leading)
                     Text(step)
                 }
@@ -179,20 +179,20 @@ struct RecipeCard: View {
             HStack {
                 Text("Notes")
                     .font(.headline)
-                    .foregroundColor(.blue)
+                    .foregroundColor(settingsManager.colors.accent)
                 
                 Spacer()
                 
                 Button(action: { showingNoteSheet = true }) {
                     Label("Add Note", systemImage: "square.and.pencil")
-                        .foregroundColor(.blue)
+                        .foregroundColor(settingsManager.colors.accent)
                 }
             }
             
             if notesManager.getNotesForRecipe(recipe.id).isEmpty {
                 Text("No notes yet")
                     .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(settingsManager.colors.textSecondary)
                     .italic()
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.top)
@@ -221,13 +221,13 @@ struct NoteBubble: View {
             
             Text(note.dateCreated.formatted(date: .abbreviated, time: .shortened))
                 .font(.caption)
-                .foregroundColor(.gray)
+                .foregroundColor(settingsManager.colors.textSecondary)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .fill(Color.gray.opacity(0.1))
+                .fill(settingsManager.colors.divider.opacity(0.1))
         )
         .contextMenu {
             Button(role: .destructive) {
