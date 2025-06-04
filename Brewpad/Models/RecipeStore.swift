@@ -190,15 +190,18 @@ class RecipeStore: ObservableObject {
             if let url = Bundle.main.url(forResource: filename, withExtension: "json"),
                let data = try? Data(contentsOf: url),
                var recipe = try? JSONDecoder().decode(Recipe.self, from: data) {
-                // Force built-in status and Brewpad creator for bundled recipes
+                // Force built-in status and Brewpad creator while
+                // preserving id and featured state from the bundled file
                 recipe = Recipe(
+                    id: recipe.id,
                     name: recipe.name,
                     category: recipe.category,
                     description: recipe.description,
                     ingredients: recipe.ingredients,
                     preparations: recipe.preparations,
                     isBuiltIn: true,
-                    creator: "Brewpad"  // Set Brewpad as creator for system recipes
+                    creator: "Brewpad",  // Set Brewpad as creator for system recipes
+                    isFeatured: recipe.isFeatured
                 )
                 recipes.append(recipe)
             }
