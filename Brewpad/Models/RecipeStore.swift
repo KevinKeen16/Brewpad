@@ -11,6 +11,8 @@ class RecipeStore: ObservableObject {
     private let serverBaseURL = "https://bprs.mirreravencd.com/recipes"
     private var hasLoadedRecipes = false
     private var minimumSplashTimeElapsed = false
+    /// Keeps track of all JSON recipe files currently stored locally.
+    private var localRecipeFiles = Set<String>()
     
     init() {
         // Start loading immediately
@@ -66,13 +68,19 @@ class RecipeStore: ObservableObject {
                 return
             }
 
+            // Identify files that are not already stored locally
+            let newFiles = fileNames.filter { !self.localRecipeFiles.contains($0) && $0.hasSuffix(".json") }
+
             let dispatchGroup = DispatchGroup()
             var downloaded = false
 
-            for name in fileNames where name.hasSuffix(".json") {
+            for name in newFiles {
                 dispatchGroup.enter()
                 self.downloadRecipeIfNeeded(named: name) { didDownload in
-                    if didDownload { downloaded = true }
+                    if didDownload {
+                        downloaded = true
+                        self.localRecipeFiles.insert(name)
+                    }
                     dispatchGroup.leave()
                 }
             }
@@ -202,7 +210,7 @@ class RecipeStore: ObservableObject {
         ).filter({ $0.pathExtension == "json" }) else {
             return
         }
-        
+
         var loadedUserRecipes: [Recipe] = []
         for url in fileURLs {
             if let recipe = try? loadRecipe(from: url) {
@@ -210,6 +218,8 @@ class RecipeStore: ObservableObject {
                 loadedUserRecipes.append(recipe)
             }
         }
+        // Track the local recipe filenames for future server checks
+        localRecipeFiles = Set(fileURLs.map { $0.lastPathComponent })
         userRecipes = loadedUserRecipes
     }
     
@@ -268,6 +278,7 @@ class RecipeStore: ObservableObject {
         do {
             try FileManager.default.removeItem(at: fileURL)
             print("✅ Successfully deleted recipe file from disk")
+            localRecipeFiles.remove(filename)
         } catch {
             print("❌ Failed to delete recipe file: \(error.localizedDescription)")
         }
