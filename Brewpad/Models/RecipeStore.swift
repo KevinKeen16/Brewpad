@@ -67,7 +67,7 @@ class RecipeStore: ObservableObject {
                 return
             }
 
-            let fileNames = self.extractJSONFileNames(from: content)
+            let fileNames = self.extractRecipeFileNames(from: content)
 
             DispatchQueue.main.async {
                 self.serverFetchedRecipes = fileNames
@@ -88,8 +88,8 @@ class RecipeStore: ObservableObject {
         }.resume()
     }
 
-    private func extractJSONFileNames(from content: String) -> [String] {
-        let pattern = "[A-Za-z0-9_./-]+\\.json"
+    private func extractRecipeFileNames(from content: String) -> [String] {
+        let pattern = "[A-Za-z0-9_./-]+\\.brewpadrecipe"
         guard let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) else { return [] }
         let range = NSRange(content.startIndex..<content.endIndex, in: content)
         let matches = regex.matches(in: content, options: [], range: range)
@@ -209,7 +209,9 @@ class RecipeStore: ObservableObject {
         guard let fileURLs = try? FileManager.default.contentsOfDirectory(
             at: recipesDirectory,
             includingPropertiesForKeys: nil
-        ).filter({ $0.pathExtension == "json" }) else {
+        ).filter({
+            $0.pathExtension == "json" || $0.pathExtension == "brewpadrecipe"
+        }) else {
             return
         }
         
