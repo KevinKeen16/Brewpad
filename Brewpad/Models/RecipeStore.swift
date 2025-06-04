@@ -13,15 +13,27 @@ class RecipeStore: ObservableObject {
     private var hasLoadedRecipes = false
     private var hasFetchedServerRecipes = false
     private var minimumSplashTimeElapsed = false
+    private var minimumSplashDuration: TimeInterval = 2
     
     init() {
+        // Determine if today is the user's birthday. If so, extend the
+        // minimum splash screen duration to three seconds instead of two.
+        if let birthday = UserDefaults.standard.object(forKey: "birthdate") as? Date {
+            let calendar = Calendar.current
+            let today = calendar.dateComponents([.month, .day], from: Date())
+            let components = calendar.dateComponents([.month, .day], from: birthday)
+            if today.month == components.month && today.day == components.day {
+                minimumSplashDuration = 3
+            }
+        }
+
         // Start loading immediately
         loadRecipes()
         fetchServerRecipes()
         checkServerConnection()
-        
+
         // Ensure minimum splash screen duration
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + minimumSplashDuration) {
             self.minimumSplashTimeElapsed = true
             self.checkInitialization()
         }
