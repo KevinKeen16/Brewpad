@@ -1,0 +1,144 @@
+{
+    "early_morning": [
+        "Rise and grind at 5AM, {name}! ☀️",
+        "Early morning perfection with {name}'s first brew",
+        "Dawn's breaking and so is {name}'s coffee maker",
+        "5AM coffee hits different, right {name}?",
+        "Watching the sunrise with {name}'s morning brew",
+        "Early bird special: {name}'s morning motivation",
+        "First light, first coffee with {name}",
+        "Morning meditation: {name}'s brewing ritual",
+        "Dawn patrol brewing with {name}",
+        "6AM: {name}'s coffee adventure begins"
+    ],
+    "morning": [
+        "9AM meetings need 9AM coffee, {name}",
+        "Morning rush? {name}'s got the perfect brew",
+        "Mid-morning pick-me-up for {name}",
+        "10AM: Time for {name}'s coffee break",
+        "Morning meetings made better with {name}'s brew",
+        "Starting strong at 9AM, {name}",
+        "Morning productivity powered by {name}",
+        "8AM: {name}'s brewing masterclass",
+        "Morning sunshine and {name}'s perfect pour",
+        "Coffee o'clock: {name}'s morning ritual"
+    ],
+    "midday": [
+        "Noon brew with {name}",
+        "Lunch break perfection at 12PM, {name}",
+        "Midday recharge with {name}",
+        "1PM pick-me-up for {name}",
+        "Lunch and brew: {name}'s perfect pair",
+        "High noon, high caffeine with {name}",
+        "12 o'clock coffee thoughts with {name}",
+        "Midday motivation for {name}",
+        "Afternoon approaching: {name}'s brewing",
+        "Lunch break champion: {name}'s brew time"
+    ],
+    "afternoon": [
+        "3PM slump? Not for {name}!",
+        "Afternoon delight: {name}'s tea time",
+        "4PM: {name}'s productivity power hour",
+        "Mid-afternoon magic with {name}",
+        "Afternoon break with {name}'s special brew",
+        "3 o'clock creativity boost for {name}",
+        "Afternoon adventures in brewing with {name}",
+        "Tea time traditions with {name}",
+        "4PM focus fuel with {name}",
+        "Afternoon excellence by {name}"
+    ],
+    "evening": [
+        "Sunset sips with {name} at 6PM",
+        "Evening unwinding with {name}",
+        "7PM: {name}'s evening excellence",
+        "Dusk brewing with {name}",
+        "Evening relaxation by {name}",
+        "Twilight treats with {name}",
+        "6 o'clock sophistication by {name}",
+        "Evening wind-down with {name}",
+        "Sunset specialties by {name}",
+        "Night approaching: {name}'s last brew"
+    ],
+    "night": [
+        "9PM: {name}'s nightcap brewing",
+        "Evening excellence with {name}",
+        "10PM thoughts and {name}'s brew",
+        "Night owl brewing with {name}",
+        "Evening wind-down with {name}",
+        "Starlight sips with {name}",
+        "Late night perfection by {name}",
+        "9 o'clock nuances with {name}",
+        "Moonlight brewing with {name}",
+        "Night time narratives by {name}"
+    ],
+    "midnight": [
+        "Midnight musings with {name}",
+        "Can't sleep? Neither can {name}'s coffee maker",
+        "12AM: {name}'s nocturnal brewing",
+        "Late night lab with {name}",
+        "Midnight magic by {name}",
+        "Burning the midnight coffee with {name}",
+        "Insomnia brewing with {name}",
+        "12 o'clock crafting by {name}",
+        "Night owl nirvana with {name}",
+        "Moonlight masterclass by {name}"
+    ],
+    "seasonal": {
+        "new_years_eve": [
+            "New Year's Eve brewing with {name} 🎉",
+            "Counting down to midnight with {name}'s special brew ⌛️",
+            "Last coffee of the year with {name} 🎊",
+            "NYE celebration prep with {name} 🥂",
+            "Brewing away {name}'s old year memories ✨"
+        ],
+        "new_years_day": [
+            "First brew of the year with {name}! 🎊",
+            "New Year, new coffee adventures for {name} 🌟",
+            "Starting {name}'s year with perfect coffee 🎆",
+            "Fresh year, fresh coffee with {name} ✨",
+            "Happy New Year's brewing, {name}! 🎉"
+        ],
+        "christmas_eve": [
+            "Warming up for Santa with {name}'s brew ⛄️",
+            "Christmas Eve coziness with {name} 🎄",
+            "Holiday spirit brewing with {name} 🎅",
+            "Festive flavors with {name} 🎄",
+            "Christmas Eve magic in {name}'s cup ❄️"
+        ],
+        "christmas_day": [
+            "Merry Christmas brewing, {name}! 🎄",
+            "Holiday cheer in {name}'s cup 🎁",
+            "Christmas morning magic with {name} ⛄️",
+            "Festive coffee moments with {name} 🎅",
+            "Holiday happiness brewing with {name} 🌟"
+        ],
+        "valentines": [
+            "Love is brewing with {name} ❤️",
+            "Valentine's Day delights for {name} 💝",
+            "Romantic roasts with {name} 💕",
+            "Sharing the coffee love with {name} 💗",
+            "Sweet Valentine's brewing, {name} 🌹"
+        ],
+        "halloween": [
+            "Spooky brews with {name} 🎃",
+            "Haunted coffee house with {name} 👻",
+            "Trick or treat? {name}'s brewing! 🧙‍♂️",
+            "Halloween spirits with {name} 🦇",
+            "Ghostly good coffee by {name} 🕸️"
+        ],
+        "thanksgiving": [
+            "Grateful for {name}'s perfect brew 🦃",
+            "Thanksgiving warmth with {name} 🍂",
+            "Holiday brewing with {name} 🥧",
+            "Festive fall flavors by {name} 🍁",
+            "Thankful for coffee with {name} 🌾"
+        ],
+        "easter": [
+            "Easter morning magic with {name} 🐰",
+            "Spring is brewing with {name} 🌸",
+            "Easter celebration sips with {name} 🥚",
+            "Hoppy brewing with {name} 🌷",
+            "Easter Sunday perfection by {name} 🐣"
+        ]
+    }
+} 
