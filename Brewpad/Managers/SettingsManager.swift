@@ -58,8 +58,8 @@ class SettingsManager: ObservableObject {
     
     enum Theme: String, CaseIterable {
         case system = "System"
-        case light = "Light"
-        case dark = "Dark"
+        case light = "iOS Light"
+        case dark = "iOS Dark"
         case brewpadLight = "Brewpad Light"
         case brewpadDark = "Brewpad Dark"
         
@@ -90,9 +90,14 @@ class SettingsManager: ObservableObject {
     }
     
     init() {
-        if let themeString = UserDefaults.standard.string(forKey: "theme"),
-           let savedTheme = Theme(rawValue: themeString) {
-            self.theme = savedTheme
+        if let themeString = UserDefaults.standard.string(forKey: "theme") {
+            if let savedTheme = Theme(rawValue: themeString) {
+                self.theme = savedTheme
+            } else if themeString == "Light" {
+                self.theme = .light
+            } else if themeString == "Dark" {
+                self.theme = .dark
+            }
         }
         
         self.useMetricUnits = UserDefaults.standard.bool(forKey: "useMetricUnits")
