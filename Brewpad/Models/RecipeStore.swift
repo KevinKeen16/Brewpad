@@ -250,9 +250,9 @@ class RecipeStore: ObservableObject {
         recipes.filter { $0.isFeatured }
     }
     
-    private func generateFilename(for recipe: Recipe) -> String {
+    private func generateFilename(for recipe: Recipe, withExtension fileExtension: String = "json") -> String {
         let uuidSuffix = recipe.id.uuidString.suffix(8)
-        return "\(recipe.name.lowercased().replacingOccurrences(of: " ", with: "_"))_\(uuidSuffix).json"
+        return "\(recipe.name.lowercased().replacingOccurrences(of: " ", with: "_"))_\(uuidSuffix).\(fileExtension)"
     }
     
     func deleteRecipe(_ recipe: Recipe) {
@@ -279,15 +279,36 @@ class RecipeStore: ObservableObject {
         }
         
         let recipesDirectory = documentsDirectory.appendingPathComponent("Recipes", isDirectory: true)
-        let filename = generateFilename(for: recipe)
-        let fileURL = recipesDirectory.appendingPathComponent(filename)
-        print("📂 Attempting to delete file at: \(fileURL.path)")
-        
-        do {
-            try FileManager.default.removeItem(at: fileURL)
-            print("✅ Successfully deleted recipe file from disk")
-        } catch {
-            print("❌ Failed to delete recipe file: \(error.localizedDescription)")
+        let jsonFilename = generateFilename(for: recipe, withExtension: "json")
+        let brewpadFilename = generateFilename(for: recipe, withExtension: "brewpadrecipe")
+        let jsonURL = recipesDirectory.appendingPathComponent(jsonFilename)
+        let brewpadURL = recipesDirectory.appendingPathComponent(brewpadFilename)
+        print("📂 Attempting to delete files:\n - \(jsonURL.path)\n - \(brewpadURL.path)")
+
+        var deleted = false
+
+        if FileManager.default.fileExists(atPath: jsonURL.path) {
+            do {
+                try FileManager.default.removeItem(at: jsonURL)
+                deleted = true
+                print("✅ Deleted .json file")
+            } catch {
+                print("❌ Failed to delete .json file: \(error.localizedDescription)")
+            }
+        }
+
+        if FileManager.default.fileExists(atPath: brewpadURL.path) {
+            do {
+                try FileManager.default.removeItem(at: brewpadURL)
+                deleted = true
+                print("✅ Deleted .brewpadrecipe file")
+            } catch {
+                print("❌ Failed to delete .brewpadrecipe file: \(error.localizedDescription)")
+            }
+        }
+
+        if !deleted {
+            print("⚠️ No recipe file found to delete")
         }
         
         // Force reload
