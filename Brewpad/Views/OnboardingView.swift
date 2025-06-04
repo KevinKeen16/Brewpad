@@ -44,15 +44,20 @@ struct OnboardingView: View {
                 TutorialCardsView(cards: tutorialCards)
             } else {
                 // Show full onboarding with user setup first
+                let totalSteps = tutorialCards.count + 2
                 TabView(selection: $currentStep) {
                     // User Setup
                     UserSetupView(username: $username)
                         .tag(0)
-                    
+
+                    // Theme Selection
+                    ThemeSelectionView()
+                        .tag(1)
+
                     // Tutorial Cards
                     ForEach(Array(tutorialCards.enumerated()), id: \.element.id) { index, card in
                         TutorialCardView(card: card)
-                            .tag(index + 1)
+                            .tag(index + 2)
                     }
                 }
                 .tabViewStyle(.page)
@@ -73,8 +78,8 @@ struct OnboardingView: View {
                         
                         Spacer()
                         
-                        Button(currentStep == tutorialCards.count ? "Get Started" : "Next") {
-                            if currentStep == tutorialCards.count {
+                        Button(currentStep == totalSteps - 1 ? "Get Started" : "Next") {
+                            if currentStep == totalSteps - 1 {
                                 finishOnboarding()
                             } else {
                                 withAnimation {
@@ -172,6 +177,37 @@ struct UserSetupView: View {
                 isUsernameFocused = true
             }
         }
+    }
+}
+
+struct ThemeSelectionView: View {
+    @EnvironmentObject private var settingsManager: SettingsManager
+
+    var body: some View {
+        VStack(spacing: 30) {
+            Image(systemName: "paintbrush.fill")
+                .font(.system(size: 60))
+                .foregroundColor(settingsManager.colors.accent)
+
+            Text("Choose Your Theme")
+                .font(.title)
+                .bold()
+
+            VStack(spacing: 20) {
+                Text("Mirror your device appearance or select a custom look. You can change this later in Settings.")
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(settingsManager.colors.textSecondary)
+                    .padding(.horizontal)
+
+                Picker("App Theme", selection: $settingsManager.theme) {
+                    ForEach(SettingsManager.Theme.allCases, id: \.self) { theme in
+                        Text(theme.rawValue).tag(theme)
+                    }
+                }
+                .pickerStyle(.segmented)
+            }
+        }
+        .padding()
     }
 }
 
