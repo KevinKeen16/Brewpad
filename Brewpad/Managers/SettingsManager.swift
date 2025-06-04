@@ -60,6 +60,7 @@ class SettingsManager: ObservableObject {
         case system = "System"
         case light = "Light"
         case dark = "Dark"
+        case brewpadLight = "Brewpad Light"
         case brewpadDark = "Brewpad Dark"
         
         var colorScheme: ColorScheme? {
@@ -67,6 +68,7 @@ class SettingsManager: ObservableObject {
             case .system: return nil
             case .light: return .light
             case .dark, .brewpadDark: return .dark
+            case .brewpadLight: return .light
             }
         }
     }
@@ -83,6 +85,7 @@ class SettingsManager: ObservableObject {
         case .light: return ThemeColors.light
         case .dark: return ThemeColors.dark
         case .brewpadDark: return ThemeColors.brewpadDark
+        case .brewpadLight: return ThemeColors.brewpadLight
         }
     }
     

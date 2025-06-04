@@ -67,3 +67,4 @@ Mark your favorite recipes for easy access anytime.
 
 ### 🌓 Dark & Light Mode Support
 Brewpad features a handcrafted dark and light theme inspired by the app’s iconography and warm, earthy color palettes.
+The new **Brewpad Light** theme uses creamy beige and coffee browns for a soft appearance.
