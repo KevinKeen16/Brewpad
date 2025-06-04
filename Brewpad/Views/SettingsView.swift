@@ -398,9 +398,8 @@ struct SettingsView: View {
     
     private func downloadRecipes() {
         isDownloading = true
-        
-        // Simulate download with 3 second delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+
+        recipeStore.updateFromServer {
             isDownloading = false
             showDownloadComplete = true
         }
