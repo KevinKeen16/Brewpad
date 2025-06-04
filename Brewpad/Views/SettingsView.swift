@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var settingsManager: SettingsManager
+    @EnvironmentObject private var recipeStore: RecipeStore
     @State private var isDownloading = false
     @State private var showDownloadComplete = false
     @State private var isEditingUsername = false
@@ -284,12 +285,40 @@ struct SettingsView: View {
                                             .foregroundColor(.gray)
                                     }
                                 }
-                                
+
                                 Text("View detailed recipe information")
                                     .font(.caption)
                                     .foregroundColor(.gray)
                             }
-                            
+
+                            // Server Response
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Server Response")
+                                    .font(.headline)
+
+                                if let response = recipeStore.serverResponse {
+                                    Text(response)
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                } else {
+                                    Text("No response yet")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                }
+
+                                Button(action: { recipeStore.checkServerConnection() }) {
+                                    HStack {
+                                        Image(systemName: "arrow.clockwise.circle.fill")
+                                        Text("Check Server Connection")
+                                    }
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.blue)
+                                    .cornerRadius(10)
+                                }
+                            }
+
                             Divider()
                         }
                     }
