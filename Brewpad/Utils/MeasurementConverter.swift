@@ -76,13 +76,13 @@ struct MeasurementConverter {
     static func convert(_ text: String, toImperial: Bool) -> String {
         
         var result = text
-        
+
         if toImperial {
             for (regex, converter) in patterns {
-                let nsRange = NSRange(text.startIndex..<text.endIndex, in: text)
+                let nsRange = NSRange(result.startIndex..<result.endIndex, in: result)
 
                 // Find all matches and process them in reverse order
-                let matches = regex.matches(in: text, options: [], range: nsRange)
+                let matches = regex.matches(in: result, options: [], range: nsRange)
                 for match in matches.reversed() {
                     if let fullRange = Range(match.range, in: result),
                        let valueRange = Range(match.range(at: 1), in: result),
