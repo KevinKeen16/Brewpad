@@ -36,11 +36,11 @@ struct MeasurementConverter {
                 // Find all matches and process them in reverse order
                 let matches = regex?.matches(in: text, options: [], range: nsRange) ?? []
                 for match in matches.reversed() {
-                    if let range = Range(match.range(at: 1), in: text),
-                       let value = Double(text[range]) {
+                    if let fullRange = Range(match.range, in: result),
+                       let valueRange = Range(match.range(at: 1), in: result),
+                       let value = Double(result[valueRange]) {
                         let convertedValue = converter(value)
-                        // Use the original unit to replace the correct measurement
-                        result = result.replacingOccurrences(of: text[range] + unit, with: convertedValue)
+                        result.replaceSubrange(fullRange, with: convertedValue)
                     }
                 }
             }

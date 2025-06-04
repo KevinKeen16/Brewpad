@@ -25,4 +25,10 @@ struct MeasurementConverterTests {
         let result = MeasurementConverter.convert("20cm", toImperial: true)
         #expect(result.contains("7.9 inches"))
     }
+
+    @Test
+    func testMultipleOccurrences() async throws {
+        let result = MeasurementConverter.convert("Add 20g sugar and 20g flour", toImperial: true)
+        #expect(result.contains("Add 0.7 oz sugar and 0.7 oz flour"))
+    }
 }
