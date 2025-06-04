@@ -116,9 +116,16 @@ class RecipeStore: ObservableObject {
     }
     /// Downloads a single recipe file from the server and stores it locally.
     /// Any existing file with the same name will be overwritten.
+    /// The file is fetched from `https://bprs.mirreravencd.com/recipes/` using
+    /// the provided name with the `.brewpadrecipe` extension.
     private func downloadRecipe(named fileName: String, completion: @escaping () -> Void) {
-        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
-              let downloadURL = URL(string: "\(serverBaseURL)/\(fileName)") else {
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            completion()
+            return
+        }
+
+        let recipeName = fileName.hasSuffix(".brewpadrecipe") ? fileName : "\(fileName).brewpadrecipe"
+        guard let downloadURL = URL(string: "\(serverBaseURL)\(recipeName)") else {
             completion()
             return
         }
@@ -129,7 +136,7 @@ class RecipeStore: ObservableObject {
             try? FileManager.default.createDirectory(at: recipesDirectory, withIntermediateDirectories: true)
         }
 
-        let destinationURL = recipesDirectory.appendingPathComponent(fileName)
+        let destinationURL = recipesDirectory.appendingPathComponent(recipeName)
 
         URLSession.shared.dataTask(with: downloadURL) { data, _, error in
             guard let data = data, error == nil else {
