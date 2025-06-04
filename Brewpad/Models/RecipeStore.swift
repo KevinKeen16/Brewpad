@@ -11,6 +11,7 @@ class RecipeStore: ObservableObject {
     private let recipesDirectoryName = "Recipes"
     private let serverBaseURL = "https://bprs.mirreravencd.com/recipes/"
     private var hasLoadedRecipes = false
+    private var hasFetchedServerRecipes = false
     private var minimumSplashTimeElapsed = false
     
     init() {
@@ -27,7 +28,7 @@ class RecipeStore: ObservableObject {
     }
     
     private func checkInitialization() {
-        if hasLoadedRecipes && minimumSplashTimeElapsed {
+        if hasLoadedRecipes && minimumSplashTimeElapsed && hasFetchedServerRecipes {
             DispatchQueue.main.async {
                 self.isInitialized = true
             }
@@ -63,7 +64,11 @@ class RecipeStore: ObservableObject {
         URLSession.shared.dataTask(with: listingURL) { data, response, error in
             guard let data = data, error == nil,
                   let content = String(data: data, encoding: .utf8) else {
-                print("❌ Failed to fetch recipe listing: \(error?.localizedDescription ?? "Unknown error")")
+                print("❌ Failed to fetch recipe listing: \(error?.localizedDescription ?? \"Unknown error\")")
+                DispatchQueue.main.async {
+                    self.hasFetchedServerRecipes = true
+                    self.checkInitialization()
+                }
                 return
             }
 
@@ -83,6 +88,7 @@ class RecipeStore: ObservableObject {
             }
 
             dispatchGroup.notify(queue: .main) {
+                self.hasFetchedServerRecipes = true
                 self.loadRecipes()
             }
         }.resume()
