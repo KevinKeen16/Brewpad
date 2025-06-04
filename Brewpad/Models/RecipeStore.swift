@@ -8,7 +8,7 @@ class RecipeStore: ObservableObject {
     @Published var showServerError = false
     @Published var serverResponse: String?
     private let recipesDirectoryName = "Recipes"
-    private let serverBaseURL = "https://bprs.mirreravencd.com/recipes"
+    private let serverBaseURL = "https://bprs.mirreravencd.com/recipes/"
     private var hasLoadedRecipes = false
     private var minimumSplashTimeElapsed = false
     
