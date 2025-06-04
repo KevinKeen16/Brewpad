@@ -28,16 +28,19 @@ class NotesManager: ObservableObject {
         do {
             let fileURLs = try fileManager.contentsOfDirectory(at: notesDirectory,
                                                              includingPropertiesForKeys: nil)
-            
+
             for fileURL in fileURLs {
                 guard fileURL.pathExtension == "json" else { continue }
-                
+
                 let data = try Data(contentsOf: fileURL)
                 let note = try JSONDecoder().decode(RecipeNote.self, from: data)
-                
+
                 notes[note.recipeId, default: []].append(note)
-                // Sort notes by date
-                notes[note.recipeId]?.sort { $0.dateCreated > $1.dateCreated }
+            }
+
+            // Sort notes for each recipe after collecting all of them
+            for recipeId in notes.keys {
+                notes[recipeId]?.sort { $0.dateCreated > $1.dateCreated }
             }
         } catch {
             print("Error loading notes: \(error)")
