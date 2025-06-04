@@ -121,6 +121,8 @@ struct WelcomeScreen: View {
 struct FeatureRow: View {
     let icon: String
     let text: String
+
+    @EnvironmentObject private var settingsManager: SettingsManager
     
     var body: some View {
         HStack {
