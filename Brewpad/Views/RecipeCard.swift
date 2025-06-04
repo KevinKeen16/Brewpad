@@ -8,7 +8,9 @@ struct RecipeCard: View {
     @State private var showingNoteSheet = false
     @State private var selectedSection = 0
     @State private var showingDeleteConfirmation = false
-    
+    @State private var favoriteScale: CGFloat = 1.0
+    @State private var favoriteRotation: Double = 0
+
     let recipe: Recipe
     let isExpanded: Bool
     let onTap: () -> Void
@@ -90,9 +92,12 @@ struct RecipeCard: View {
                 if isExpanded {
                     Button {
                         favoritesManager.toggleFavorite(recipe.id)
+                        animateFavorite()
                     } label: {
                         Image(systemName: favoritesManager.isFavorite(recipe.id) ? "star.fill" : "star")
                             .foregroundColor(settingsManager.colors.accent)
+                            .rotationEffect(.degrees(favoriteRotation))
+                            .scaleEffect(favoriteScale)
                     }
                 }
                 Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
@@ -215,6 +220,21 @@ struct RecipeCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .animation(.spring(response: 0.3), value: notesManager.getNotesForRecipe(recipe.id))
+    }
+
+    private func animateFavorite() {
+        favoriteScale = 1.3
+        favoriteRotation = 0
+        withAnimation(.easeInOut(duration: 0.1)) {
+            favoriteScale = 1.5
+        }
+        withAnimation(.easeInOut(duration: 0.1).repeatCount(3, autoreverses: true)) {
+            favoriteRotation = 15
+        }
+        withAnimation(.easeOut(duration: 0.2).delay(0.3)) {
+            favoriteScale = 1.0
+            favoriteRotation = 0
+        }
     }
 }
 
