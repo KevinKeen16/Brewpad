@@ -35,28 +35,45 @@ struct RecipesView: View {
                         TextField("Search recipes", text: $searchText)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .padding(.horizontal)
+                        Spacer()
+                        Button {
+                            withAnimation(.easeInOut) { isSearching.toggle() }
+                            if !isSearching { searchText = "" }
+                        } label: {
+                            Image(systemName: "xmark")
+                        }
+                        .padding(.trailing)
                     }
                     .padding(.vertical, 8)
                     .background(Color.gray.opacity(0.1))
                     .transition(.move(edge: .trailing))
                 } else {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 2) {
-                            ForEach(0..<categories.count, id: \.self) { index in
-                                CategoryTab(
-                                    title: categories[index],
-                                    isSelected: selectedCategory == index,
-                                    animation: animation
-                                ) {
-                                    if categories[index] == "Alcohol" && !settingsManager.isOver18 {
-                                        showAgeRestrictionAlert = true
-                                    } else {
-                                        updateCategory(to: index)
+                    HStack(spacing: 0) {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 2) {
+                                ForEach(0..<categories.count, id: \.self) { index in
+                                    CategoryTab(
+                                        title: categories[index],
+                                        isSelected: selectedCategory == index,
+                                        animation: animation
+                                    ) {
+                                        if categories[index] == "Alcohol" && !settingsManager.isOver18 {
+                                            showAgeRestrictionAlert = true
+                                        } else {
+                                            updateCategory(to: index)
+                                        }
                                     }
                                 }
                             }
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
+                        Button {
+                            withAnimation(.easeInOut) { isSearching.toggle() }
+                            if !isSearching { searchText = "" }
+                        } label: {
+                            Image(systemName: "magnifyingglass")
+                        }
+                        .padding(.trailing)
                     }
                     .padding(.vertical, 8)
                     .background(Color.gray.opacity(0.1))
@@ -97,16 +114,7 @@ struct RecipesView: View {
         } message: {
             Text("You must be 18 or older to view alcoholic beverage recipes. Please verify your age in Settings.")
         }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    withAnimation(.easeInOut) { isSearching.toggle() }
-                    if !isSearching { searchText = "" }
-                } label: {
-                    Image(systemName: isSearching ? "xmark" : "magnifyingglass")
-                }
-            }
-        }
+        // Search button moved to category bar
     }
     
     private func updateCategory(to newIndex: Int) {
