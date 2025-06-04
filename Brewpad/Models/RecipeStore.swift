@@ -53,9 +53,9 @@ class RecipeStore: ObservableObject {
         }.resume()
     }
 
-    /// Fetches any new recipes from the Brewpad remote server and stores them
-    /// locally. If new recipes are downloaded the local recipe list will be
-    /// reloaded.
+    /// Fetches the list of recipes from the Brewpad remote server and downloads
+    /// all files found in the index. After downloading, the local recipe list
+    /// will be reloaded.
     private func fetchServerRecipes() {
         guard let listingURL = URL(string: serverBaseURL) else { return }
 
@@ -69,20 +69,16 @@ class RecipeStore: ObservableObject {
             let fileNames = self.extractJSONFileNames(from: content)
 
             let dispatchGroup = DispatchGroup()
-            var downloaded = false
 
             for name in fileNames {
                 dispatchGroup.enter()
-                self.downloadRecipeIfNeeded(named: name) { didDownload in
-                    if didDownload { downloaded = true }
+                self.downloadRecipe(named: name) {
                     dispatchGroup.leave()
                 }
             }
 
             dispatchGroup.notify(queue: .main) {
-                if downloaded {
-                    self.loadRecipes()
-                }
+                self.loadRecipes()
             }
         }.resume()
     }
@@ -100,12 +96,12 @@ class RecipeStore: ObservableObject {
         }
         return Array(Set(names))
     }
-    /// Downloads a single recipe file from the server if it doesn't already
-    /// exist in the user's local storage.
-    private func downloadRecipeIfNeeded(named fileName: String, completion: @escaping (Bool) -> Void) {
+    /// Downloads a single recipe file from the server and stores it locally.
+    /// Any existing file with the same name will be overwritten.
+    private func downloadRecipe(named fileName: String, completion: @escaping () -> Void) {
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
               let downloadURL = URL(string: "\(serverBaseURL)/\(fileName)") else {
-            completion(false)
+            completion()
             return
         }
 
@@ -117,16 +113,10 @@ class RecipeStore: ObservableObject {
 
         let destinationURL = recipesDirectory.appendingPathComponent(fileName)
 
-        // Skip download if the file already exists
-        guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
-            completion(false)
-            return
-        }
-
         URLSession.shared.dataTask(with: downloadURL) { data, _, error in
             guard let data = data, error == nil else {
                 print("❌ Failed to download recipe \(fileName): \(error?.localizedDescription ?? "Unknown error")")
-                completion(false)
+                completion()
                 return
             }
 
@@ -150,10 +140,10 @@ class RecipeStore: ObservableObject {
 
             do {
                 try recipeData.write(to: destinationURL)
-                completion(true)
+                completion()
             } catch {
                 print("❌ Failed to save recipe \(fileName): \(error.localizedDescription)")
-                completion(false)
+                completion()
             }
         }.resume()
     }
