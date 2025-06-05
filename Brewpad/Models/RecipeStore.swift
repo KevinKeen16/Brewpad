@@ -233,6 +233,12 @@ class RecipeStore: ObservableObject {
                 return
             }
 
+            guard data.count <= FileLimits.maxRecipeFileSize else {
+                print("❌ Recipe \(fileName) exceeds size limit and was skipped")
+                completion()
+                return
+            }
+
             print("📥 Downloaded data for \(fileName)")
 
             var recipeData = data
@@ -344,6 +350,12 @@ class RecipeStore: ObservableObject {
     }
     
     private func loadRecipe(from url: URL) throws -> Recipe {
+        let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+        if let fileSize = attributes[.size] as? NSNumber,
+           fileSize.int64Value > FileLimits.maxRecipeFileSize {
+            throw NSError(domain: "RecipeStore", code: 1, userInfo: [NSLocalizedDescriptionKey: "Recipe file too large"])
+        }
+
         let data = try Data(contentsOf: url)
         var recipe = try JSONDecoder().decode(Recipe.self, from: data)
 
