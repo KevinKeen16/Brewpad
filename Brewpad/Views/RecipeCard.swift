@@ -10,6 +10,8 @@ struct RecipeCard: View {
     @State private var showingDeleteConfirmation = false
     @State private var favoriteScale: CGFloat = 1.0
     @State private var favoriteRotation: Double = 0
+    @State private var downloadScale: CGFloat = 1.0
+    @State private var hasDownloaded = false
 
     let recipe: Recipe
     let isExpanded: Bool
@@ -130,11 +132,16 @@ struct RecipeCard: View {
 
                     if showsDownloadButton {
                         Button {
+                            guard !hasDownloaded else { return }
                             recipeStore.importRecipeToPermanent(recipe)
+                            hasDownloaded = true
+                            animateDownload()
                         } label: {
-                            Image(systemName: "tray.and.arrow.down")
+                            Image(systemName: hasDownloaded ? "checkmark" : "tray.and.arrow.down")
                                 .foregroundColor(settingsManager.colors.accent)
+                                .scaleEffect(downloadScale)
                         }
+                        .disabled(hasDownloaded)
                     }
                 }
             }
@@ -277,6 +284,16 @@ struct RecipeCard: View {
         withAnimation(.easeOut(duration: 0.2).delay(0.3)) {
             favoriteScale = 1.0
             favoriteRotation = 0
+        }
+    }
+
+    private func animateDownload() {
+        downloadScale = 1.0
+        withAnimation(.spring(response: 0.2, dampingFraction: 0.6)) {
+            downloadScale = 1.3
+        }
+        withAnimation(.easeOut(duration: 0.2).delay(0.2)) {
+            downloadScale = 1.0
         }
     }
 }
