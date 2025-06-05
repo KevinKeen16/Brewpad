@@ -15,6 +15,20 @@ struct ContentView: View {
     @State private var selectedTab: Tab = .recipes
     @State private var selectedCategory = 0
 
+    private var selectedTabBinding: Binding<Tab?> {
+        Binding<Tab?>(
+            get: { selectedTab },
+            set: { selectedTab = $0 ?? selectedTab }
+        )
+    }
+
+    private var selectedCategoryBinding: Binding<Int?> {
+        Binding<Int?>(
+            get: { selectedCategory },
+            set: { selectedCategory = $0 ?? selectedCategory }
+        )
+    }
+
     enum Tab: Int, CaseIterable, Identifiable {
         case featured, recipes, manage, info, settings
 
@@ -117,7 +131,7 @@ struct ContentView: View {
 
     private var iPadBody: some View {
         NavigationSplitView {
-            List(selection: $selectedTab) {
+            List(selection: selectedTabBinding) {
                 ForEach(Tab.allCases) { tab in
                     Label(tab.title, systemImage: tab.systemImage)
                         .tag(tab)
@@ -126,7 +140,7 @@ struct ContentView: View {
             .navigationSplitViewColumnWidth(200)
         } content: {
             if selectedTab == .recipes {
-                List(selection: $selectedCategory) {
+                List(selection: selectedCategoryBinding) {
                     let categories = ["All"] + Recipe.Category.allCases.map(\.rawValue)
                     ForEach(categories.indices, id: \.self) { index in
                         Text(categories[index])
