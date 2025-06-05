@@ -18,17 +18,22 @@ struct RecipeCard: View {
     /// This defaults to `false` so the button only appears when explicitly
     /// requested (e.g. from the Featured tab).
     let showsDownloadButton: Bool
+    /// Controls whether the delete option should be available via the
+    /// long-press context menu. Defaults to `true` for existing behaviour.
+    let canDelete: Bool
 
     init(
         recipe: Recipe,
         isExpanded: Bool,
         onTap: @escaping () -> Void,
-        showsDownloadButton: Bool = false
+        showsDownloadButton: Bool = false,
+        canDelete: Bool = true
     ) {
         self.recipe = recipe
         self.isExpanded = isExpanded
         self.onTap = onTap
         self.showsDownloadButton = showsDownloadButton
+        self.canDelete = canDelete
     }
     
     private let expandedHeight: CGFloat = 300
@@ -140,7 +145,7 @@ struct RecipeCard: View {
             .contentShape(Rectangle())
             .onTapGesture(perform: onTap)
             .contextMenu {
-                if !recipe.isBuiltIn && recipe.creator != "Brewpad" {
+                if canDelete && !recipe.isBuiltIn && recipe.creator != "Brewpad" {
                     Button(role: .destructive) {
                         print("🗑️ Delete button tapped for recipe: \(recipe.name)")
                         showingDeleteConfirmation = true

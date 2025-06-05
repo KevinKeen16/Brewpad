@@ -81,7 +81,8 @@ struct FeaturedRecipesView: View {
                                     recipe: recipe,
                                     isExpanded: true,
                                     onTap: {},
-                                    showsDownloadButton: true
+                                    showsDownloadButton: true,
+                                    canDelete: false
                                 )
                                 .frame(width: 300)
                             }
