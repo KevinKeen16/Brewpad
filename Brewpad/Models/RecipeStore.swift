@@ -246,8 +246,9 @@ class RecipeStore: ObservableObject {
                     ingredients: recipe.ingredients,
                     preparations: recipe.preparations,
                     isBuiltIn: recipe.isBuiltIn,
-                    creator: "Brewpad",
-                    isFeatured: recipe.isFeatured
+                    creator: recipe.isCommunityHighlight ? recipe.creator : "Brewpad",
+                    isWeeklyFeature: recipe.isWeeklyFeature,
+                    isCommunityHighlight: recipe.isCommunityHighlight
                 )
                 recipeData = (try? JSONEncoder().encode(recipe)) ?? data
             }
@@ -296,8 +297,8 @@ class RecipeStore: ObservableObject {
                let data = try? Data(contentsOf: url),
                var recipe = try? JSONDecoder().decode(Recipe.self, from: data) {
                 // Force built-in status and Brewpad creator while
-                // stripping the featured state. Only server-downloaded
-                // recipes may retain the featured flag.
+                // stripping the feature flags. Only server-downloaded
+                // recipes may retain featured states.
                 recipe = Recipe(
                     id: recipe.id,
                     name: recipe.name,
@@ -307,7 +308,8 @@ class RecipeStore: ObservableObject {
                     preparations: recipe.preparations,
                     isBuiltIn: true,
                     creator: "Brewpad",  // Set Brewpad as creator for system recipes
-                    isFeatured: false
+                    isWeeklyFeature: false,
+                    isCommunityHighlight: false
                 )
                 recipes.append(recipe)
             }
@@ -345,7 +347,7 @@ class RecipeStore: ObservableObject {
         let data = try Data(contentsOf: url)
         var recipe = try JSONDecoder().decode(Recipe.self, from: data)
 
-        // Only allow the featured flag for recipes downloaded from the server
+        // Only allow the feature flags for recipes downloaded from the server
         // which are stored with the `.brewpadrecipe` extension.
         if url.pathExtension.lowercased() != "brewpadrecipe" {
             recipe = Recipe(
@@ -357,7 +359,8 @@ class RecipeStore: ObservableObject {
                 preparations: recipe.preparations,
                 isBuiltIn: recipe.isBuiltIn,
                 creator: recipe.creator,
-                isFeatured: false
+                isWeeklyFeature: false,
+                isCommunityHighlight: false
             )
         }
 
@@ -372,9 +375,14 @@ class RecipeStore: ObservableObject {
         return recipes.filter { $0.category.rawValue == category }
     }
 
-    /// Returns all recipes marked as featured.
-    func getFeaturedRecipes() -> [Recipe] {
-        recipes.filter { $0.isFeatured }
+    /// Returns all recipes marked as weekly features.
+    func getWeeklyFeatures() -> [Recipe] {
+        recipes.filter { $0.isWeeklyFeature }
+    }
+
+    /// Returns all recipes marked as community highlights.
+    func getCommunityHighlights() -> [Recipe] {
+        recipes.filter { $0.isCommunityHighlight }
     }
     
     private func generateFilename(for recipe: Recipe, withExtension fileExtension: String = "json") -> String {
@@ -444,4 +452,30 @@ class RecipeStore: ObservableObject {
         loadRecipes()
         print("✅ Deletion process complete")
     }
-} 
+
+    /// Saves a recipe to the user's documents directory using the
+    /// `.brewpadrecipe` extension and reloads the recipe list.
+    func importRecipeToPermanent(_ recipe: Recipe) {
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("❌ Failed to access documents directory")
+            return
+        }
+
+        let recipesDirectory = documentsDirectory.appendingPathComponent(recipesDirectoryName)
+        if !FileManager.default.fileExists(atPath: recipesDirectory.path) {
+            try? FileManager.default.createDirectory(at: recipesDirectory, withIntermediateDirectories: true)
+        }
+
+        let filename = generateFilename(for: recipe, withExtension: "brewpadrecipe")
+        let destinationURL = recipesDirectory.appendingPathComponent(filename)
+
+        do {
+            let data = try JSONEncoder().encode(recipe)
+            try data.write(to: destinationURL)
+            print("✅ Imported recipe to \(destinationURL.path)")
+            loadRecipes()
+        } catch {
+            print("❌ Failed to import recipe: \(error.localizedDescription)")
+        }
+    }
+}

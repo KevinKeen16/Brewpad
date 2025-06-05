@@ -24,7 +24,8 @@ struct Recipe: Identifiable, Codable {
     private let _preparations: [String]
     let isBuiltIn: Bool
     let creator: String
-    let isFeatured: Bool
+    let isWeeklyFeature: Bool
+    let isCommunityHighlight: Bool
 
     /// Public read-only accessors used throughout the views.
     var ingredients: [String] { _ingredients }
@@ -39,7 +40,8 @@ struct Recipe: Identifiable, Codable {
         preparations: [String],
         isBuiltIn: Bool = false,
         creator: String,
-        isFeatured: Bool = false
+        isWeeklyFeature: Bool = false,
+        isCommunityHighlight: Bool = false
     ) {
         self.id = id
         self.name = name
@@ -49,12 +51,13 @@ struct Recipe: Identifiable, Codable {
         self._preparations = preparations
         self.isBuiltIn = isBuiltIn
         self.creator = creator
-        self.isFeatured = isFeatured
+        self.isWeeklyFeature = isWeeklyFeature
+        self.isCommunityHighlight = isCommunityHighlight
     }
 
     // Custom coding keys to map the private stored properties
     private enum CodingKeys: String, CodingKey {
-        case id, name, category, description, ingredients, preparations, isBuiltIn, creator, isFeatured
+        case id, name, category, description, ingredients, preparations, isBuiltIn, creator, isWeeklyFeature, isCommunityHighlight
     }
 
     init(from decoder: Decoder) throws {
@@ -67,7 +70,8 @@ struct Recipe: Identifiable, Codable {
         _preparations = try container.decode([String].self, forKey: .preparations)
         isBuiltIn = try container.decodeIfPresent(Bool.self, forKey: .isBuiltIn) ?? false
         creator = try container.decodeIfPresent(String.self, forKey: .creator) ?? "Unknown"
-        isFeatured = try container.decodeIfPresent(Bool.self, forKey: .isFeatured) ?? false
+        isWeeklyFeature = try container.decodeIfPresent(Bool.self, forKey: .isWeeklyFeature) ?? false
+        isCommunityHighlight = try container.decodeIfPresent(Bool.self, forKey: .isCommunityHighlight) ?? false
     }
 
     func encode(to encoder: Encoder) throws {
@@ -80,6 +84,7 @@ struct Recipe: Identifiable, Codable {
         try container.encode(_preparations, forKey: .preparations)
         try container.encode(isBuiltIn, forKey: .isBuiltIn)
         try container.encode(creator, forKey: .creator)
-        try container.encode(isFeatured, forKey: .isFeatured)
+        try container.encode(isWeeklyFeature, forKey: .isWeeklyFeature)
+        try container.encode(isCommunityHighlight, forKey: .isCommunityHighlight)
     }
 }

@@ -4,7 +4,7 @@ struct ExploreView: View {
     @EnvironmentObject var recipeStore: RecipeStore
 
     var featuredRecipes: [Recipe] {
-        recipeStore.recipes.filter { $0.isFeatured }
+        recipeStore.recipes.filter { $0.isWeeklyFeature }
     }
 
     var body: some View {
@@ -34,6 +34,7 @@ struct ExploreView: View {
 
 struct FeaturedRecipeCard: View {
     let recipe: Recipe
+    @EnvironmentObject private var recipeStore: RecipeStore
 
     var body: some View {
         VStack {
@@ -46,6 +47,11 @@ struct FeaturedRecipeCard: View {
 
             Text(recipe.name)
                 .fontWeight(.semibold)
+
+            Button("Import") {
+                recipeStore.importRecipeToPermanent(recipe)
+            }
+            .buttonStyle(.borderedProminent)
         }
         .padding(.vertical)
         .background(Color.white)

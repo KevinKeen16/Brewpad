@@ -211,7 +211,8 @@ struct RecipeEditorView: View {
             preparations: preparations.filter { !$0.isEmpty },
             isBuiltIn: existingRecipe?.isBuiltIn ?? false,
             creator: isImporting ? existingRecipe?.creator ?? "Unknown" : settingsManager.username ?? "Unknown",
-            isFeatured: existingRecipe?.isFeatured ?? false
+            isWeeklyFeature: existingRecipe?.isWeeklyFeature ?? false,
+            isCommunityHighlight: existingRecipe?.isCommunityHighlight ?? false
         )
         print("📝 Created recipe object: \(recipe.name)")
         

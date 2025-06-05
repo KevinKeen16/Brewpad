@@ -99,6 +99,13 @@ struct RecipeCard: View {
                             .rotationEffect(.degrees(favoriteRotation))
                             .scaleEffect(favoriteScale)
                     }
+
+                    Button {
+                        recipeStore.importRecipeToPermanent(recipe)
+                    } label: {
+                        Image(systemName: "tray.and.arrow.down")
+                            .foregroundColor(settingsManager.colors.accent)
+                    }
                 }
             }
             .padding()
