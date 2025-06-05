@@ -3,7 +3,7 @@ import SwiftUI
 struct RecipesView: View {
     @EnvironmentObject private var settingsManager: SettingsManager
     @EnvironmentObject private var appState: AppState
-    @StateObject private var recipeStore = RecipeStore()
+    @EnvironmentObject private var recipeStore: RecipeStore
     @EnvironmentObject private var favoritesManager: FavoritesManager
     @State private var selectedCategory = 0
     @State private var expandedRecipe: UUID?
