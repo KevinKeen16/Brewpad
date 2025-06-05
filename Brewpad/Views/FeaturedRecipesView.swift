@@ -7,11 +7,11 @@ struct FeaturedRecipesView: View {
     @State private var collapsedCategories: Set<String> = []
 
     private var weeklyRecommendations: [Recipe] {
-        recipeStore.getFeaturedRecipes()
+        recipeStore.getWeeklyFeatures()
     }
 
     private var communityHighlights: [Recipe] {
-        recipeStore.userRecipes
+        recipeStore.getCommunityHighlights()
     }
 
     private var favoriteRecipes: [Recipe] {

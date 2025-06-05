@@ -2,7 +2,8 @@
     "id": "1b4f8a2e-3d5c-4e6f-9a7b-8c2d1e0f3456",
     "name": "Cappuccino",
     "category": "Coffee",
-    "isFeatured": false,
+    "isWeeklyFeature": false,
+    "isCommunityHighlight": false,
     "description": "A classic espresso-based drink with steamed milk and a light layer of foam. Perfect for morning or afternoon, this drink balances the intensity of coffee with the smoothness of milk.",
     "ingredients": [
         "22.5g ground coffee",

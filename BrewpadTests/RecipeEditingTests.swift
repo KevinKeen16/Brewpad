@@ -44,7 +44,8 @@ struct RecipeEditingTests {
                             preparations: ["Brew"],
                             isBuiltIn: original.isBuiltIn,
                             creator: original.creator,
-                            isFeatured: original.isFeatured)
+                            isWeeklyFeature: original.isWeeklyFeature,
+                            isCommunityHighlight: original.isCommunityHighlight)
         try save(edited, existing: original, in: baseDir)
 
         let files = try FileManager.default.contentsOfDirectory(at: baseDir, includingPropertiesForKeys: nil)
