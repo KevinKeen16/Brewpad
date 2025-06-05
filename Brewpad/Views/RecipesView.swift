@@ -30,16 +30,16 @@ struct RecipesView: View {
             base = recipeStore.getRecipesForCategory(categories[selectedCategory])
         }
 
-        // Hide featured recipes unless the user has imported them
-        let downloadedIDs = Set(recipeStore.userRecipes.map(\.id))
-        base.removeAll {
-            ($0.isWeeklyFeature || $0.isCommunityHighlight) &&
-            !downloadedIDs.contains($0.id)
-        }
-
         if showFavoritesOnly {
             base = favoritesManager.favorites(in: base)
         }
+
+        // Hide featured recipes unless they are a favorite
+        base.removeAll {
+            ($0.isWeeklyFeature || $0.isCommunityHighlight) &&
+            !favoritesManager.isFavorite($0.id)
+        }
+
         return base
     }
     
