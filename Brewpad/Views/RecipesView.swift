@@ -70,29 +70,30 @@ struct RecipesView: View {
                     TextField("Search recipes", text: $searchText)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding(.horizontal)
-                        Spacer()
-                        Button {
-                            withAnimation(.easeInOut) { isSearching.toggle() }
-                            if !isSearching { searchText = "" }
-                        } label: {
-                            Image(systemName: "xmark")
-                        }
-                        .padding(.trailing)
+                    Spacer()
+                    Button {
+                        withAnimation(.easeInOut) { isSearching.toggle() }
+                        if !isSearching { searchText = "" }
+                    } label: {
+                        Image(systemName: "xmark")
                     }
-                    .padding(.vertical, 8)
-                    .background(settingsManager.colors.divider.opacity(0.1))
-                    .transition(.move(edge: .trailing))
-                } else {
-                    HStack(spacing: 0) {
-                        Button {
-                            withAnimation { showFavoritesOnly.toggle() }
-                        } label: {
-                            Image(systemName: showFavoritesOnly ? "star.fill" : "star")
-                                .padding(.leading)
-                                .foregroundColor(settingsManager.colors.accent)
-                        }
-                        .padding(.trailing)
+                    .padding(.trailing)
+                }
+                .padding(.vertical, 8)
+                .background(settingsManager.colors.divider.opacity(0.1))
+                .transition(.move(edge: .trailing))
+            } else {
+                HStack(spacing: 0) {
+                    Button {
+                        withAnimation { showFavoritesOnly.toggle() }
+                    } label: {
+                        Image(systemName: showFavoritesOnly ? "star.fill" : "star")
+                            .padding(.leading)
+                            .foregroundColor(settingsManager.colors.accent)
+                    }
+                    .padding(.trailing)
 
+                    if UIDevice.current.userInterfaceIdiom != .pad {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 2) {
                                 ForEach(0..<categories.count, id: \.self) { index in
@@ -111,29 +112,32 @@ struct RecipesView: View {
                             }
                             .padding(.horizontal)
                         }
-                        Button {
-                            withAnimation(.easeInOut) { isSearching.toggle() }
-                            if !isSearching { searchText = "" }
-                        } label: {
-                            Image(systemName: "magnifyingglass")
-                        }
-                        .padding(.leading)
-                        .padding(.trailing)
                     }
-                    .padding(.vertical, 8)
-                    .background(settingsManager.colors.divider.opacity(0.1))
 
-                    if let description = categoryDescriptions[categories[selectedCategory]] {
-                        Text(description)
-                            .font(.subheadline)
-                            .foregroundColor(settingsManager.colors.textSecondary)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(settingsManager.colors.divider.opacity(0.2))
-                            .transition(.opacity)
-                            .animation(.easeInOut, value: selectedCategory)
+                    Button {
+                        withAnimation(.easeInOut) { isSearching.toggle() }
+                        if !isSearching { searchText = "" }
+                    } label: {
+                        Image(systemName: "magnifyingglass")
                     }
+                    .padding(.leading)
+                    .padding(.trailing)
                 }
+                .padding(.vertical, 8)
+                .background(settingsManager.colors.divider.opacity(0.1))
+
+                if UIDevice.current.userInterfaceIdiom != .pad,
+                   let description = categoryDescriptions[categories[selectedCategory]] {
+                    Text(description)
+                        .font(.subheadline)
+                        .foregroundColor(settingsManager.colors.textSecondary)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(settingsManager.colors.divider.opacity(0.2))
+                        .transition(.opacity)
+                        .animation(.easeInOut, value: selectedCategory)
+                }
+            }
         }
     }
 
@@ -194,7 +198,7 @@ struct RecipesView: View {
             headerView
 
             ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 320), spacing: 12)], spacing: 12) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 300), spacing: 20)], spacing: 20) {
                     ForEach(displayedRecipes) { recipe in
                         RecipeCard(
                             recipe: recipe,
