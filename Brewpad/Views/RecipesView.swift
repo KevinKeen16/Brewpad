@@ -5,6 +5,7 @@ struct RecipesView: View {
     @EnvironmentObject private var appState: AppState
     @EnvironmentObject private var recipeStore: RecipeStore
     @EnvironmentObject private var favoritesManager: FavoritesManager
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selectedCategory = 0
     @State private var expandedRecipe: UUID?
     @State private var slideDirection: SlideDirection = .none
@@ -119,26 +120,49 @@ struct RecipesView: View {
             
             // Scrollable recipe list
             ScrollView {
-                LazyVStack(spacing: 12) {
-                    ForEach(displayedRecipes) { recipe in
-                        RecipeCard(
-                            recipe: recipe,
-                            isExpanded: expandedRecipe == recipe.id,
-                            onTap: {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                                    expandedRecipe = expandedRecipe == recipe.id ? nil : recipe.id
-                                }
-                            },
-                            showsDownloadButton: false
-                        )
+                if horizontalSizeClass == .regular {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 320), spacing: 12)], spacing: 12) {
+                        ForEach(displayedRecipes) { recipe in
+                            RecipeCard(
+                                recipe: recipe,
+                                isExpanded: expandedRecipe == recipe.id,
+                                onTap: {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                        expandedRecipe = expandedRecipe == recipe.id ? nil : recipe.id
+                                    }
+                                },
+                                showsDownloadButton: false
+                            )
+                        }
                     }
+                    .padding()
                     if showFavoritesOnly && displayedRecipes.isEmpty {
                         Text("You have no favorites for this category")
                             .foregroundColor(settingsManager.colors.textSecondary)
                             .padding()
                     }
+                } else {
+                    LazyVStack(spacing: 12) {
+                        ForEach(displayedRecipes) { recipe in
+                            RecipeCard(
+                                recipe: recipe,
+                                isExpanded: expandedRecipe == recipe.id,
+                                onTap: {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                        expandedRecipe = expandedRecipe == recipe.id ? nil : recipe.id
+                                    }
+                                },
+                                showsDownloadButton: false
+                            )
+                        }
+                        if showFavoritesOnly && displayedRecipes.isEmpty {
+                            Text("You have no favorites for this category")
+                                .foregroundColor(settingsManager.colors.textSecondary)
+                                .padding()
+                        }
+                    }
+                    .padding()
                 }
-                .padding()
             }
         }
         .alert("Age Restriction", isPresented: $showAgeRestrictionAlert) {
