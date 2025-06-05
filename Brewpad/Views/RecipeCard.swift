@@ -14,6 +14,22 @@ struct RecipeCard: View {
     let recipe: Recipe
     let isExpanded: Bool
     let onTap: () -> Void
+    /// When true, a download button will be shown while the card is expanded.
+    /// This defaults to `false` so the button only appears when explicitly
+    /// requested (e.g. from the Featured tab).
+    let showsDownloadButton: Bool
+
+    init(
+        recipe: Recipe,
+        isExpanded: Bool,
+        onTap: @escaping () -> Void,
+        showsDownloadButton: Bool = false
+    ) {
+        self.recipe = recipe
+        self.isExpanded = isExpanded
+        self.onTap = onTap
+        self.showsDownloadButton = showsDownloadButton
+    }
     
     private let expandedHeight: CGFloat = 300
     
@@ -100,11 +116,13 @@ struct RecipeCard: View {
                             .scaleEffect(favoriteScale)
                     }
 
-                    Button {
-                        recipeStore.importRecipeToPermanent(recipe)
-                    } label: {
-                        Image(systemName: "tray.and.arrow.down")
-                            .foregroundColor(settingsManager.colors.accent)
+                    if showsDownloadButton {
+                        Button {
+                            recipeStore.importRecipeToPermanent(recipe)
+                        } label: {
+                            Image(systemName: "tray.and.arrow.down")
+                                .foregroundColor(settingsManager.colors.accent)
+                        }
                     }
                 }
             }
