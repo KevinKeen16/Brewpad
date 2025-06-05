@@ -117,11 +117,13 @@ struct ContentView: View {
 
     private var iPadBody: some View {
         NavigationSplitView {
-            List(selection: $selectedTab) {
+            List {
                 Section(header: Text("Tabs")) {
                     ForEach(Tab.allCases) { tab in
-                        Label(tab.title, systemImage: tab.systemImage)
-                            .tag(tab)
+                        Button(action: { selectedTab = tab }) {
+                            Label(tab.title, systemImage: tab.systemImage)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
 
@@ -129,11 +131,11 @@ struct ContentView: View {
                     Section(header: Text("Categories")) {
                         let categories = ["All"] + Recipe.Category.allCases.map(\.rawValue)
                         ForEach(categories.indices, id: \.self) { index in
-                            Text(categories[index])
-                                .tag(index)
-                                .onTapGesture {
-                                    selectedCategory = index
-                                }
+                            Button(action: { selectedCategory = index }) {
+                                Text(categories[index])
+                            }
+                            .buttonStyle(.plain)
+                            .tag(index)
                         }
                     }
                 }
