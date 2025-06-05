@@ -64,6 +64,7 @@ struct RecipesView: View {
                                 .padding(.leading)
                                 .foregroundColor(settingsManager.colors.accent)
                         }
+                        .padding(.trailing)
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 2) {
@@ -89,6 +90,7 @@ struct RecipesView: View {
                         } label: {
                             Image(systemName: "magnifyingglass")
                         }
+                        .padding(.leading)
                         .padding(.trailing)
                     }
                     .padding(.vertical, 8)
