@@ -14,6 +14,7 @@ struct BrewpadApp: App {
     @StateObject private var favoritesManager = FavoritesManager()
     @StateObject private var recipeStore = RecipeStore()
     @StateObject private var appState = AppState()
+    @Environment(\.scenePhase) private var scenePhase
     
     var body: some Scene {
         WindowGroup {
@@ -28,6 +29,11 @@ struct BrewpadApp: App {
                 .onOpenURL { url in
                     handleIncomingURL(url)
                 }
+        }
+        .onChange(of: scenePhase) { phase in
+            if phase == .active {
+                checkForAirDroppedRecipes()
+            }
         }
     }
     
@@ -50,6 +56,21 @@ struct BrewpadApp: App {
             appState.reinitialize(for: .recipeImported)
         } catch {
             print("Error handling incoming recipe: \(error)")
+        }
+    }
+
+    private func checkForAirDroppedRecipes() {
+        guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            return
+        }
+        let inboxURL = documentsURL.appendingPathComponent("Inbox")
+        guard let contents = try? FileManager.default.contentsOfDirectory(at: inboxURL, includingPropertiesForKeys: nil) else {
+            return
+        }
+
+        for url in contents where url.pathExtension.lowercased() == "brewpadrecipe" {
+            handleIncomingURL(url)
+            try? FileManager.default.removeItem(at: url)
         }
     }
 }
