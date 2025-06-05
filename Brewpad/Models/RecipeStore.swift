@@ -478,11 +478,26 @@ class RecipeStore: ObservableObject {
             try? FileManager.default.createDirectory(at: recipesDirectory, withIntermediateDirectories: true)
         }
 
-        let filename = generateFilename(for: recipe, withExtension: "brewpadrecipe")
+        // Create a fresh copy of the recipe with a new ID and without any
+        // featured flags. The creator is updated so the UI can display the
+        // original author.
+        let copiedRecipe = Recipe(
+            name: recipe.name,
+            category: recipe.category,
+            description: recipe.description,
+            ingredients: recipe.ingredients,
+            preparations: recipe.preparations,
+            isBuiltIn: false,
+            creator: "Copied from \(recipe.creator)",
+            isWeeklyFeature: false,
+            isCommunityHighlight: false
+        )
+
+        let filename = generateFilename(for: copiedRecipe, withExtension: "brewpadrecipe")
         let destinationURL = recipesDirectory.appendingPathComponent(filename)
 
         do {
-            let data = try JSONEncoder().encode(recipe)
+            let data = try JSONEncoder().encode(copiedRecipe)
             try data.write(to: destinationURL)
             print("✅ Imported recipe to \(destinationURL.path)")
             loadRecipes()

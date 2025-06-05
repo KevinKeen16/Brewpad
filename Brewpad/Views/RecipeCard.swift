@@ -99,7 +99,14 @@ struct RecipeCard: View {
                             .foregroundColor(settingsManager.colors.textSecondary)
                         Text("•")
                             .foregroundColor(settingsManager.colors.textSecondary)
-                        Text("by \(recipe.creator)")
+                        let creatorText: String = {
+                            if recipe.creator.lowercased().hasPrefix("copied from") {
+                                return recipe.creator
+                            } else {
+                                return "by \(recipe.creator)"
+                            }
+                        }()
+                        Text(creatorText)
                             .font(.subheadline)
                             .foregroundColor(settingsManager.colors.textSecondary)
                     }
