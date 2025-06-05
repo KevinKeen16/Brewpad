@@ -9,9 +9,21 @@ struct MeasurementConverterTests {
     }
 
     @Test
+    func testOuncesToGrams() async throws {
+        let result = MeasurementConverter.convert("0.7 oz", toImperial: false)
+        #expect(result.contains("20g"))
+    }
+
+    @Test
     func testMillilitersToFluidOunces() async throws {
         let result = MeasurementConverter.convert("120ml", toImperial: true)
         #expect(result.contains("4.1 fl oz"))
+    }
+
+    @Test
+    func testFluidOuncesToMilliliters() async throws {
+        let result = MeasurementConverter.convert("4 fl oz", toImperial: false)
+        #expect(result.contains("118ml"))
     }
 
     @Test
@@ -21,9 +33,21 @@ struct MeasurementConverterTests {
     }
 
     @Test
+    func testFahrenheitToCelsius() async throws {
+        let result = MeasurementConverter.convert("199°F", toImperial: false)
+        #expect(result.contains("93°C"))
+    }
+
+    @Test
     func testCentimetersToInches() async throws {
         let result = MeasurementConverter.convert("20cm", toImperial: true)
         #expect(result.contains("7.9 inches"))
+    }
+
+    @Test
+    func testInchesToCentimeters() async throws {
+        let result = MeasurementConverter.convert("7.9 inches", toImperial: false)
+        #expect(result.contains("20.0cm"))
     }
 
     @Test

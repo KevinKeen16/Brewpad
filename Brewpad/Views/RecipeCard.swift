@@ -156,7 +156,12 @@ struct RecipeCard: View {
                 HStack(alignment: .top) {
                     Text("•")
                         .foregroundColor(settingsManager.colors.accent)
-                    Text(ingredient)
+                    Text(
+                        MeasurementConverter.convert(
+                            ingredient,
+                            toImperial: !settingsManager.useMetricUnits
+                        )
+                    )
                 }
                 .font(.subheadline)
             }
@@ -175,7 +180,12 @@ struct RecipeCard: View {
                     Text("\(index + 1).")
                         .foregroundColor(settingsManager.colors.accent)
                         .frame(width: 25, alignment: .leading)
-                    Text(step)
+                    Text(
+                        MeasurementConverter.convert(
+                            step,
+                            toImperial: !settingsManager.useMetricUnits
+                        )
+                    )
                 }
                 .font(.subheadline)
             }
