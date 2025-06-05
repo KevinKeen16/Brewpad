@@ -14,6 +14,7 @@ struct RecipesView: View {
     @State private var isSearching = false
     @State private var searchText = ""
     @State private var showFavoritesOnly = false
+    @State private var selectedRecipeId: UUID?
     
     enum SlideDirection {
         case left, right, none
@@ -44,14 +45,33 @@ struct RecipesView: View {
         return base
     }
     
+    private var selectedRecipe: Recipe? {
+        guard let id = selectedRecipeId else { return nil }
+        return recipeStore.recipes.first { $0.id == id }
+    }
+
     var body: some View {
+        Group {
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                iPadBody
+            } else {
+                phoneBody
+            }
+        }
+        .alert("Age Restriction", isPresented: $showAgeRestrictionAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("You must be 18 or older to view alcoholic beverage recipes. Please verify your age in Settings.")
+        }
+    }
+
+    private var headerView: some View {
         VStack(spacing: 0) {
-            VStack(spacing: 0) {
-                if isSearching {
-                    HStack {
-                        TextField("Search recipes", text: $searchText)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .padding(.horizontal)
+            if isSearching {
+                HStack {
+                    TextField("Search recipes", text: $searchText)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.horizontal)
                         Spacer()
                         Button {
                             withAnimation(.easeInOut) { isSearching.toggle() }
@@ -116,9 +136,13 @@ struct RecipesView: View {
                             .animation(.easeInOut, value: selectedCategory)
                     }
                 }
-            }
-            
-            // Scrollable recipe list
+        }
+    }
+
+    private var phoneBody: some View {
+        VStack(spacing: 0) {
+            headerView
+
             ScrollView {
                 if horizontalSizeClass == .regular {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 320), spacing: 12)], spacing: 12) {
@@ -165,12 +189,44 @@ struct RecipesView: View {
                 }
             }
         }
-        .alert("Age Restriction", isPresented: $showAgeRestrictionAlert) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text("You must be 18 or older to view alcoholic beverage recipes. Please verify your age in Settings.")
+    }
+
+    private var iPadBody: some View {
+        NavigationSplitView {
+            VStack(spacing: 0) {
+                headerView
+                List(displayedRecipes, selection: $selectedRecipeId) { recipe in
+                    HStack {
+                        Text(recipe.name)
+                        Spacer()
+                        if favoritesManager.isFavorite(recipe.id) {
+                            Image(systemName: "star.fill")
+                                .foregroundColor(settingsManager.colors.accent)
+                        }
+                    }
+                    .contentShape(Rectangle())
+                    .tag(recipe.id)
+                }
+                .listStyle(.plain)
+            }
+        } detail: {
+            if let recipe = selectedRecipe {
+                ScrollView {
+                    RecipeCard(
+                        recipe: recipe,
+                        isExpanded: true,
+                        onTap: {},
+                        showsDownloadButton: false
+                    )
+                    .padding()
+                }
+                .navigationTitle(recipe.name)
+            } else {
+                Text("Select a recipe")
+                    .foregroundColor(.secondary)
+                    .navigationTitle("Recipe")
+            }
         }
-        // Search button moved to category bar
     }
     
     private func updateCategory(to newIndex: Int) {
