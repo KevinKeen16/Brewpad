@@ -35,11 +35,11 @@ struct FeaturedRecipesView: View {
     private func explainer(for title: String) -> String {
         switch title {
         case "Weekly Recommendations":
-            return "Hand-picked by the Brewpad team."
+            return "Hand-picked suggestions from the Brewpad team to inspire your next brew."
         case "Community Highlights":
-            return "Popular creations from the community."
+            return "Popular creations from fellow users. See what the community is enjoying."
         case "Our Favorites":
-            return "Recipes you've starred." 
+            return "Recipes you've starred for quick access to the drinks you love most."
         default:
             return ""
         }
@@ -75,6 +75,7 @@ struct FeaturedRecipesView: View {
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 12) {
+                            Spacer(minLength: 0)
                             ForEach(recipes) { recipe in
                                 RecipeCard(
                                     recipe: recipe,
@@ -83,6 +84,7 @@ struct FeaturedRecipesView: View {
                                 )
                                 .frame(width: 300)
                             }
+                            Spacer(minLength: 0)
                         }
                         .padding(.horizontal)
                     }
