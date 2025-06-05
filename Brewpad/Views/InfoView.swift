@@ -52,9 +52,15 @@ struct InfoView: View {
                             .frame(maxWidth: .infinity)
                         
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("• 22.5g ground coffee (21g basket)")
+                            Text(MeasurementConverter.convert(
+                                "• 22.5g ground coffee (21g basket)",
+                                toImperial: !settingsManager.useMetricUnits
+                            ))
                             Text("• Prep puck as usual")
-                            Text("• Extract 45g espresso (double shot)")
+                            Text(MeasurementConverter.convert(
+                                "• Extract 45g espresso (double shot)",
+                                toImperial: !settingsManager.useMetricUnits
+                            ))
                         }
                         .font(.subheadline)
                         .foregroundColor(settingsManager.colors.textSecondary)
