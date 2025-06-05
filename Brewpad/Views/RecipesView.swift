@@ -6,7 +6,7 @@ struct RecipesView: View {
     @EnvironmentObject private var recipeStore: RecipeStore
     @EnvironmentObject private var favoritesManager: FavoritesManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @State private var selectedCategory = 0
+    @Binding var selectedCategory: Int
     @State private var expandedRecipe: UUID?
     @State private var slideDirection: SlideDirection = .none
     @Namespace private var animation
@@ -15,6 +15,10 @@ struct RecipesView: View {
     @State private var searchText = ""
     @State private var showFavoritesOnly = false
     @State private var selectedRecipeId: UUID?
+
+    init(selectedCategory: Binding<Int>) {
+        _selectedCategory = selectedCategory
+    }
     
     enum SlideDirection {
         case left, right, none
