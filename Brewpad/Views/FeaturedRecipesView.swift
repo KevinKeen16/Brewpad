@@ -3,8 +3,8 @@ import SwiftUI
 struct FeaturedRecipesView: View {
     @EnvironmentObject private var recipeStore: RecipeStore
     @EnvironmentObject private var favoritesManager: FavoritesManager
-    // Track which recipes are expanded. New cards start expanded by default.
-    @State private var expandedRecipes: Set<UUID> = []
+    // Track which categories are collapsed
+    @State private var collapsedCategories: Set<String> = []
 
     private var weeklyRecommendations: [Recipe] {
         recipeStore.getFeaturedRecipes()
@@ -20,12 +20,13 @@ struct FeaturedRecipesView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(spacing: 24) {
                 categorySection(title: "Weekly Recommendations", recipes: weeklyRecommendations)
                 categorySection(title: "Community Highlights", recipes: communityHighlights)
                 categorySection(title: "Our Favorites", recipes: favoriteRecipes)
             }
             .padding(.vertical)
+            .frame(maxWidth: .infinity)
         }
         .navigationTitle("Featured")
         .navigationBarTitleDisplayMode(.inline)
@@ -47,42 +48,47 @@ struct FeaturedRecipesView: View {
     @ViewBuilder
     private func categorySection(title: String, recipes: [Recipe]) -> some View {
         if !recipes.isEmpty {
-            VStack(alignment: .leading, spacing: 12) {
-                Text(title)
-                    .font(.headline)
-                    .padding(.leading)
-
-                Text(explainer(for: title))
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal)
-
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
-                        ForEach(recipes) { recipe in
-                            RecipeCard(
-                                recipe: recipe,
-                                isExpanded: expandedRecipes.contains(recipe.id),
-                                onTap: {
-                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                                        if expandedRecipes.contains(recipe.id) {
-                                            expandedRecipes.remove(recipe.id)
-                                        } else {
-                                            expandedRecipes.insert(recipe.id)
-                                        }
-                                    }
-                                }
-                            )
-                            .frame(width: 300)
-                            .onAppear {
-                                // Expand cards when first shown
-                                expandedRecipes.insert(recipe.id)
-                            }
+            VStack(spacing: 12) {
+                Button {
+                    withAnimation(.easeInOut) {
+                        if collapsedCategories.contains(title) {
+                            collapsedCategories.remove(title)
+                        } else {
+                            collapsedCategories.insert(title)
                         }
                     }
-                    .padding(.horizontal)
+                } label: {
+                    HStack(spacing: 4) {
+                        Text(title)
+                            .font(.headline)
+                        Image(systemName: collapsedCategories.contains(title) ? "chevron.down" : "chevron.up")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+
+                if !collapsedCategories.contains(title) {
+                    Text(explainer(for: title))
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(recipes) { recipe in
+                                RecipeCard(
+                                    recipe: recipe,
+                                    isExpanded: true,
+                                    onTap: {}
+                                )
+                                .frame(width: 300)
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
                 }
             }
+            .frame(maxWidth: .infinity)
         }
     }
 }
