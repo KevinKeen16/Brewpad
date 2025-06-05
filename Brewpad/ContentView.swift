@@ -117,34 +117,28 @@ struct ContentView: View {
 
     private var iPadBody: some View {
         NavigationSplitView {
-            List {
-                Section(header: Text("Tabs")) {
-                    ForEach(Tab.allCases) { tab in
-                        Button(action: { selectedTab = tab }) {
-                            Label(tab.title, systemImage: tab.systemImage)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-
-                if selectedTab == .recipes {
-                    Section(header: Text("Categories")) {
-                        let categories = ["All"] + Recipe.Category.allCases.map(\.rawValue)
-                        ForEach(categories.indices, id: \.self) { index in
-                            Button(action: { selectedCategory = index }) {
-                                Text(categories[index])
-                            }
-                            .buttonStyle(.plain)
-                            .tag(index)
-                        }
-                    }
+            List(selection: $selectedTab) {
+                ForEach(Tab.allCases) { tab in
+                    Label(tab.title, systemImage: tab.systemImage)
+                        .tag(tab)
                 }
             }
-            .listStyle(.sidebar)
+            .navigationSplitViewColumnWidth(200)
+        } content: {
+            if selectedTab == .recipes {
+                List(selection: $selectedCategory) {
+                    let categories = ["All"] + Recipe.Category.allCases.map(\.rawValue)
+                    ForEach(categories.indices, id: \.self) { index in
+                        Text(categories[index])
+                            .tag(index)
+                    }
+                }
+                .navigationTitle("Categories")
+            }
         } detail: {
             switch selectedTab {
             case .featured:
-                NavigationView { FeaturedRecipesView() }
+                NavigationStack { FeaturedRecipesView() }
             case .recipes:
                 RecipesView(selectedCategory: $selectedCategory)
             case .manage:
@@ -152,7 +146,7 @@ struct ContentView: View {
             case .info:
                 InfoView()
             case .settings:
-                NavigationView {
+                NavigationStack {
                     SettingsView()
                         .navigationTitle("Settings")
                 }
