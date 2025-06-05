@@ -33,8 +33,15 @@ struct BrewpadApp: App {
     
     private func handleIncomingURL(_ url: URL) {
         guard url.pathExtension == "brewpadrecipe" else { return }
-        
+
         do {
+            let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+            if let fileSize = attributes[.size] as? NSNumber,
+               fileSize.int64Value > FileLimits.maxRecipeFileSize {
+                print("Incoming recipe exceeds size limit and was ignored")
+                return
+            }
+
             let data = try Data(contentsOf: url)
             let decoder = JSONDecoder()
             let recipe = try decoder.decode(Recipe.self, from: data)

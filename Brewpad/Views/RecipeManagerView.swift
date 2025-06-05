@@ -232,6 +232,14 @@ struct RecipeManagerView: View {
                 }
                 
                 do {
+                    let attributes = try FileManager.default.attributesOfItem(atPath: selectedFile.path)
+                    if let fileSize = attributes[.size] as? NSNumber,
+                       fileSize.int64Value > FileLimits.maxRecipeFileSize {
+                        importError = "The selected file exceeds the 10MB limit."
+                        showImportError = true
+                        return
+                    }
+
                     let data = try Data(contentsOf: selectedFile)
                     let decoder = JSONDecoder()
                     var recipe = try decoder.decode(Recipe.self, from: data)
