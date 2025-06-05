@@ -80,7 +80,8 @@ struct FeaturedRecipesView: View {
                                 RecipeCard(
                                     recipe: recipe,
                                     isExpanded: true,
-                                    onTap: {}
+                                    onTap: {},
+                                    showsDownloadButton: true
                                 )
                                 .frame(width: 300)
                             }

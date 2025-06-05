@@ -29,6 +29,14 @@ struct RecipesView: View {
         } else {
             base = recipeStore.getRecipesForCategory(categories[selectedCategory])
         }
+
+        // Hide featured recipes unless the user has imported them
+        let downloadedIDs = Set(recipeStore.userRecipes.map(\.id))
+        base.removeAll {
+            ($0.isWeeklyFeature || $0.isCommunityHighlight) &&
+            !downloadedIDs.contains($0.id)
+        }
+
         if showFavoritesOnly {
             base = favoritesManager.favorites(in: base)
         }
@@ -120,7 +128,8 @@ struct RecipesView: View {
                                 withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                                     expandedRecipe = expandedRecipe == recipe.id ? nil : recipe.id
                                 }
-                            }
+                            },
+                            showsDownloadButton: false
                         )
                     }
                     if showFavoritesOnly && displayedRecipes.isEmpty {

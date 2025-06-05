@@ -41,7 +41,8 @@ struct RecipeView: View {
                                     withAnimation {
                                         expandedRecipeId = expandedRecipeId == recipe.id ? nil : recipe.id
                                     }
-                                }
+                                },
+                                showsDownloadButton: false
                             )
                         }
                     }
