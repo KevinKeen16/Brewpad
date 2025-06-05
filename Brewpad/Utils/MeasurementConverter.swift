@@ -24,8 +24,8 @@ struct MeasurementConverter {
 
     private static let metricVolumeRegex: NSRegularExpression = {
         guard let regex = try? NSRegularExpression(
-            pattern: "([0-9]+\\.?[0-9]*)ml\\b",
-            options: []
+            pattern: "([0-9]+\\.?[0-9]*)\\s*ml'?s?\\b",
+            options: [.caseInsensitive]
         ) else {
             fatalError("Failed to compile volume regular expression")
         }
@@ -105,8 +105,8 @@ struct MeasurementConverter {
     // Range patterns (e.g., 10-15g)
     private static let metricRangeRegex: NSRegularExpression = {
         guard let regex = try? NSRegularExpression(
-            pattern: "([0-9]+\\.?[0-9]*)\\s*-\\s*([0-9]+\\.?[0-9]*)(g|kg|ml)\\b",
-            options: []
+            pattern: "([0-9]+\\.?[0-9]*)\\s*-\\s*([0-9]+\\.?[0-9]*)(g|kg|ml'?s?)\\b",
+            options: [.caseInsensitive]
         ) else {
             fatalError("Failed to compile metric range regular expression")
         }
@@ -245,7 +245,7 @@ struct MeasurementConverter {
                   let firstValue = Double(result[firstValueRange]),
                   let secondValue = Double(result[secondValueRange]) else { continue }
 
-            let unit = String(result[unitRange])
+            let unit = String(result[unitRange]).lowercased()
             var convertedUnit: String = unit
             var newFirst: String = String(firstValue)
             var newSecond: String = String(secondValue)
@@ -260,7 +260,7 @@ struct MeasurementConverter {
                     newFirst = String(format: "%.1f", firstValue * 2.20462)
                     newSecond = String(format: "%.1f", secondValue * 2.20462)
                     convertedUnit = "lb"
-                case "ml":
+                case _ where unit.hasPrefix("ml"):
                     newFirst = String(format: "%.1f", firstValue * 0.033814)
                     newSecond = String(format: "%.1f", secondValue * 0.033814)
                     convertedUnit = "fl oz"
@@ -273,7 +273,7 @@ struct MeasurementConverter {
                     newFirst = String(format: "%.0f", firstValue / 0.035274)
                     newSecond = String(format: "%.0f", secondValue / 0.035274)
                     convertedUnit = "g"
-                case "fl oz":
+                case _ where unit.hasPrefix("fl oz"):
                     newFirst = String(format: "%.0f", firstValue / 0.033814)
                     newSecond = String(format: "%.0f", secondValue / 0.033814)
                     convertedUnit = "ml"
