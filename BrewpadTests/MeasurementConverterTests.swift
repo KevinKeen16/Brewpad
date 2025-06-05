@@ -21,6 +21,18 @@ struct MeasurementConverterTests {
     }
 
     @Test
+    func testPluralMillilitersToFluidOunces() async throws {
+        let result = MeasurementConverter.convert("120mls", toImperial: true)
+        #expect(result.contains("4.1 fl oz"))
+    }
+
+    @Test
+    func testApostropheMillilitersToFluidOunces() async throws {
+        let result = MeasurementConverter.convert("120ml's", toImperial: true)
+        #expect(result.contains("4.1 fl oz"))
+    }
+
+    @Test
     func testFluidOuncesToMilliliters() async throws {
         let result = MeasurementConverter.convert("4 fl oz", toImperial: false)
         #expect(result.contains("118ml"))
