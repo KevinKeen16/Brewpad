@@ -4,15 +4,6 @@ struct FeaturedRecipesView: View {
     @EnvironmentObject private var recipeStore: RecipeStore
     @EnvironmentObject private var favoritesManager: FavoritesManager
     @State private var expandedRecipe: UUID?
-    @State private var selectedCategory: Category = .weekly
-
-    enum Category: String, CaseIterable, Identifiable {
-        case weekly = "Weekly Recommendations"
-        case community = "Community Highlights"
-        case favorites = "Our Favorites"
-
-        var id: Self { self }
-    }
 
     private var weeklyRecommendations: [Recipe] {
         recipeStore.getFeaturedRecipes()
@@ -26,40 +17,45 @@ struct FeaturedRecipesView: View {
         favoritesManager.favorites(in: recipeStore.recipes)
     }
 
-    private var displayedRecipes: [Recipe] {
-        switch selectedCategory {
-        case .weekly: return weeklyRecommendations
-        case .community: return communityHighlights
-        case .favorites: return favoriteRecipes
-        }
-    }
-
     var body: some View {
         ScrollView {
-            Picker("Category", selection: $selectedCategory) {
-                ForEach(Category.allCases) { category in
-                    Text(category.rawValue).tag(category)
-                }
+            VStack(alignment: .leading, spacing: 24) {
+                categorySection(title: "Weekly Recommendations", recipes: weeklyRecommendations)
+                categorySection(title: "Community Highlights", recipes: communityHighlights)
+                categorySection(title: "Our Favorites", recipes: favoriteRecipes)
             }
-            .pickerStyle(.segmented)
-            .padding()
-
-            LazyVStack(spacing: 12) {
-                ForEach(displayedRecipes) { recipe in
-                    RecipeCard(
-                        recipe: recipe,
-                        isExpanded: expandedRecipe == recipe.id,
-                        onTap: {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                                expandedRecipe = expandedRecipe == recipe.id ? nil : recipe.id
-                            }
-                        }
-                    )
-                }
-            }
-            .padding()
+            .padding(.vertical)
         }
         .navigationTitle("Featured")
+    }
+
+    @ViewBuilder
+    private func categorySection(title: String, recipes: [Recipe]) -> some View {
+        if !recipes.isEmpty {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(title)
+                    .font(.headline)
+                    .padding(.leading)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(recipes) { recipe in
+                            RecipeCard(
+                                recipe: recipe,
+                                isExpanded: expandedRecipe == recipe.id,
+                                onTap: {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                        expandedRecipe = expandedRecipe == recipe.id ? nil : recipe.id
+                                    }
+                                }
+                            )
+                            .frame(width: 300)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+            }
+        }
     }
 }
 
